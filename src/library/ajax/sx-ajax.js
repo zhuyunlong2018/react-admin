@@ -56,6 +56,9 @@ export default class SXAjax {
         instance.defaults.timeout = 10000;
         // instance.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
         // instance.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
+        const token = document.head.querySelector('meta[name="csrf-token"]');
+        //laravel csrf验证
+        instance.defaults.headers.post['X-CSRF-TOKEN'] = token.content;
         instance.defaults.headers.post['Content-Type'] = 'application/json';
         instance.defaults.headers.put['Content-Type'] = 'application/json';
         instance.defaults.baseURL = '/';
@@ -149,8 +152,13 @@ export default class SXAjax {
                 cancelToken: new CancelToken(c => cancel = c),
                 ...options,
             }).then(response => {
-                this.onShowSuccessTip(response, successTip);
-                resolve(response.data, response);
+                if (response.data.code === 200) {
+                    this.onShowSuccessTip(response, successTip);
+                    resolve(response.data.data, response);
+                } else {
+                    this.onShowErrorTip(response.data.msg, errorTip);
+                    reject(response.data);
+                }
             }, err => {
                 const isCanceled = err && err.message && err.message.canceled;
                 if (isCanceled) return; // 如果是用户主动cancel，不做任何处理，不会触发任何函数

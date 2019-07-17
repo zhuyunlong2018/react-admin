@@ -60,7 +60,6 @@ export default class AppRouter extends Component {
                         {allRoutes.map(item => {
                             const {path, component} = item;
                             let isNoAuthRoute = false;
-
                             // 不需要登录的页面
                             if (noAuthRoutes.includes(path)) isNoAuthRoute = true;
 

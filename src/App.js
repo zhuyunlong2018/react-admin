@@ -12,8 +12,9 @@ export default class App extends React.Component {
         this.props.action.getStateFromStorage();
 
         const {system, menu} = this.props.action;
-        const loginUser = getLoginUser();
 
+        const loginUser = getLoginUser();
+        
         // 获取系统菜单 和 随菜单携带过来的权限
         this.state.loading = true;
         menu.getMenus({

@@ -23,7 +23,8 @@ export const sxAjax = new SXAjax({
 });
 
 // 默认配置
-sxAjax.defaults.baseURL = '/api';
+// sxAjax.defaults.baseURL = '/api';
+sxAjax.defaults.baseURL = 'http://localhost:8000';
 sxAjax.defaults.timeout = 1000 * 60;
 sxAjax.mockDefaults.baseURL = '/';
 

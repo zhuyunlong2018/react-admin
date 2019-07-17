@@ -1,8 +1,8 @@
 import {getTopNodeByNode} from '@/library/utils/tree-utils';
 import {uniqueArray} from '@/library/utils';
 import {getMenuTreeDataAndPermissions, getSelectedMenuByPath} from '../commons';
-import getMenus from "@/menus";
 import {getCurrentLocal} from '@/i18n';
+import {getMenus} from "@/api/menu"
 
 export const types = {
     GET_MENU_STATUS: 'MENU:GET_MENU_STATUS',    // 防止各个模块冲突，预订[模块名:]开头
@@ -28,9 +28,10 @@ export default {
      * 获取系统菜单
      */
     getMenus: {
-        payload: ({params} = {}) => getMenus(params.userId),
+        payload: ({params} = {}) => getMenus(params),
         reducer: {
             resolve: (state, {payload: menus}) => {
+                
                 // 首次获取数据之后进行国际化处理
                 const i18n = getCurrentLocal();
                 const localedMenus = menus.map(item => {
