@@ -124,7 +124,7 @@ export default class index extends Component {
             url,
             target,
             local,
-            type = '1',
+            type = 1,
             code,
             order,
         } = record;
@@ -162,8 +162,6 @@ export default class index extends Component {
      */
     handleDeleteNode = (record) => {
         const { key } = record;
-
-        // TODO
         this.setState({ loading: true });
         del({ key })
             .then(() => {
@@ -180,8 +178,7 @@ export default class index extends Component {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values);
-
+                // console.log('Received values of form: ', values);
                 // 如果key存在视为修改，其他为添加
                 const { key } = values;
                 this.setState({ loading: true });
@@ -262,7 +259,7 @@ export default class index extends Component {
                                         { value: 2, label: '功能' },
                                     ]}
                                     field="type"
-                                    decorator={{ initialValue: '1' }}
+                                    decorator={{ initialValue: 1 }}
                                     getPopupContainer={() => document.querySelector('.ant-modal-wrap')}
                                 />
                             </Col>

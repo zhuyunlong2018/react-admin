@@ -4,7 +4,7 @@ import PageContent from '@/layouts/page-content';
 import { Operator, ToolBar } from "@/library/antd";
 import config from '@/commons/config-hoc';
 import RoleEdit from './RoleEdit';
-import { getRoles, add, edit, del } from '@/api/role'
+import { getRoles, del } from '@/api/role'
 
 @config({
     path: '/roles',

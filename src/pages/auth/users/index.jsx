@@ -9,7 +9,7 @@ import {
     Operator,
     ToolBar,
 } from "@/library/antd";
-// import UserEdit from "./UserEdit"
+import UserEdit from "./UserEdit"
 import config from '@/commons/config-hoc';
 import { getUsers, del } from "@/api/user"
 
@@ -26,6 +26,8 @@ export default class UserCenter extends Component {
         jobs: [],           // 工作下拉数据
         positions: [],      // 职位下拉数据
         collapsed: true,    // 是否收起
+        user: void null,    //选中要编辑的用户
+        visible: false,     //添加、编辑框显示隐藏
     };
 
     queryItems = [
@@ -92,7 +94,8 @@ export default class UserCenter extends Component {
                 const items = [
                     {
                         label: '编辑',
-                        onClick: () => this.props.history.push(`/users/_/UserEdit/${id}?name=${name}`),
+                        // onClick: () => this.props.history.push(`/users/_/UserEdit/${id}?name=${name}`),
+                        onClick: () => this.handleEdit(record),
                     },
                     {
                         label: '删除',
@@ -152,8 +155,13 @@ export default class UserCenter extends Component {
     }
 
     handleAdd = () => {
-        this.props.history.push('/users/_/UserEdit/:id');
+        // this.props.history.push('/users/_/UserEdit/:id');
+        this.setState({ user: void null, visible: true });
     }
+
+    handleEdit = (user) => {
+        this.setState({ user, visible: true });
+    };
 
     handleDelete(id) {
         this.setState({ loading: true })
@@ -169,6 +177,19 @@ export default class UserCenter extends Component {
             })
     }
 
+    onOke(user) {
+        if (this.state.user) {
+            for (let index in this.state.dataSource) {
+                if (this.state.dataSource[index].id === user.id) {
+                    this.state.dataSource[index] = user
+                }
+            }
+        } else {
+            this.state.dataSource.push(user)
+        }
+        this.setState({ visible: false })
+    }
+
     render() {
         const {
             total,
@@ -176,6 +197,8 @@ export default class UserCenter extends Component {
             pageSize,
             collapsed,
             dataSource,
+            user,
+            visible
         } = this.state;
         return (
             <PageContent>
@@ -219,12 +242,12 @@ export default class UserCenter extends Component {
                     <Button type="primary">导出所有</Button>
                 </FixBottom>
 
-                {/* <UserEdit
+                <UserEdit
                     user={user}
                     visible={visible}
                     onOk={(user) => this.onOke(user)}
                     onCancel={() => this.setState({ visible: false })}
-                /> */}
+                />
             </PageContent>
         );
     }
