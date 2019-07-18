@@ -1,31 +1,32 @@
-import React, {Component} from 'react';
-import {Table} from 'antd';
+import React, { Component } from 'react';
+import { Table } from 'antd';
 import PageContent from '@/layouts/page-content';
-import {Operator, ToolBar} from "@/library/antd";
+import { Operator, ToolBar } from "@/library/antd";
 import config from '@/commons/config-hoc';
 import RoleEdit from './RoleEdit';
+import { getRoles, add, edit, del } from '@/api/role'
 
 @config({
     path: '/roles',
 })
 export default class RoleList extends Component {
     state = {
-        roleId: void 0,
+        role: void null,
         visible: false,
         dataSource: [],     // 表格数据
     };
 
     columns = [
-        {title: '角色名称', dataIndex: 'name', key: 'name'},
-        {title: '角色描述', dataIndex: 'description', key: 'description'},
+        { title: '角色名称', dataIndex: 'name', key: 'name' },
+        { title: '角色描述', dataIndex: 'description', key: 'description' },
         {
             title: '操作', dataIndex: 'operator', key: 'operator',
             render: (value, record) => {
-                const {id, name} = record;
+                const { id, name } = record;
                 const items = [
                     {
                         label: '编辑',
-                        onClick: () => this.handleEdit(id),
+                        onClick: () => this.handleEdit(record),
                     },
                     {
                         label: '删除',
@@ -37,52 +38,74 @@ export default class RoleList extends Component {
                     }
                 ];
 
-                return <Operator items={items}/>
+                return <Operator items={items} />
             },
         }
     ];
 
     componentDidMount() {
-        this.handleSearch();
+        this.fetchRoles()
     }
 
-    handleSearch = () => {
-        const pageNum = 1;
-        const pageSize = 20;
-        const dataSource = [];
-        for (let i = 0; i < pageSize; i++) {
-            const id = pageSize * (pageNum - 1) + i + 1;
-            dataSource.push({id: `${id}`, name: `管理员${id}`, description: '角色描述'});
-        }
-
-        this.setState({dataSource});
-    };
+    /**
+     * 获取角色列表
+     */
+    fetchRoles() {
+        this.setState({ loading: true });
+        getRoles()
+            .then(roles => {
+                this.setState({ dataSource: roles });
+            })
+            .finally(() => this.setState({ loading: false }));
+    }
 
 
     handleAdd = () => {
-        this.setState({roleId: void 0, visible: true});
+        this.setState({ role: void null, visible: true });
     };
 
     handleDelete = (id) => {
         // TODO
+        this.setState({ loading: true });
+        del({ id }).then(() => {
+            for (let index in this.state.dataSource) {
+                if (this.state.dataSource[index].id === id) {
+                    this.state.dataSource.splice(index, 1)
+                }
+            }
+        })
+            .finally(() => this.setState({ loading: false }));
     };
 
-    handleEdit = (roleId) => {
-        this.setState({roleId, visible: true});
+    handleEdit = (role) => {
+        this.setState({ role, visible: true });
     };
+
+    onOke(role) {
+        if (this.state.role) {
+            for (let index in this.state.dataSource) {
+                if (this.state.dataSource[index].id === role.id) {
+                    this.state.dataSource[index] = role
+                }
+            }
+        } else {
+            this.state.dataSource.push(role)
+        }
+
+        this.setState({ visible: false })
+    }
 
     render() {
         const {
             dataSource,
             visible,
-            roleId,
+            role,
         } = this.state;
-        console.log('render roles');
         return (
             <PageContent>
                 <ToolBar
                     items={[
-                        {type: 'primary', text: '添加角色', icon: 'plus', onClick: this.handleAdd}
+                        { type: 'primary', text: '添加角色', icon: 'plus', onClick: this.handleAdd }
                     ]}
                 />
 
@@ -93,10 +116,10 @@ export default class RoleList extends Component {
                     pagination={false}
                 />
                 <RoleEdit
-                    roleId={roleId}
+                    role={role}
                     visible={visible}
-                    onOk={() => this.setState({visible: false})}
-                    onCancel={() => this.setState({visible: false})}
+                    onOk={(role) => this.onOke(role)}
+                    onCancel={() => this.setState({ visible: false })}
                 />
             </PageContent>
         );

@@ -8,3 +8,6 @@ export const add = params => sxAjax.post("admin/menus/add", params)
 
 //编辑菜单
 export const edit = params => sxAjax.put("admin/menus/edit", params)
+
+//删除菜单
+export const del = params => sxAjax.del("admin/menus/del", params)

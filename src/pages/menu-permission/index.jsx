@@ -6,7 +6,7 @@ import { convertToTree } from "@/library/utils/tree-utils";
 import { ToolBar, Operator, FormElement } from '@/library/antd';
 import IconPicker from "@/components/icon-picker";
 import './style.less';
-import { getMenus, add, edit } from "@/api/menu"
+import { getMenus, add, edit, del } from "@/api/menu"
 
 @config({
     path: '/menu-permission',
@@ -113,7 +113,7 @@ export default class index extends Component {
 
     handleEditNode = (record) => {
         const { resetFields, setFieldsValue } = this.props.form;
-        
+
         resetFields();
         const {
             key,
@@ -165,8 +165,7 @@ export default class index extends Component {
 
         // TODO
         this.setState({ loading: true });
-        this.props.ajax
-            .del(`/menus/${key}`)
+        del({ key })
             .then(() => {
                 this.setState({ visible: false });
                 this.fetchMenus();
@@ -189,9 +188,9 @@ export default class index extends Component {
                 const ajax = key ? edit(values) : add(values);
 
                 ajax.then(() => {
-                        this.setState({ visible: false });
-                        this.fetchMenus();
-                    })
+                    this.setState({ visible: false });
+                    this.fetchMenus();
+                })
                     .finally(() => this.setState({ loading: false }));
             }
         });
