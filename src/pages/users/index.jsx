@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {Button, Table} from 'antd';
+import React, { Component } from 'react';
+import { Button, Table } from 'antd';
 import PageContent from '@/layouts/page-content';
 import FixBottom from '@/layouts/fix-bottom';
 import {
@@ -9,7 +9,9 @@ import {
     Operator,
     ToolBar,
 } from "@/library/antd";
+// import UserEdit from "./UserEdit"
 import config from '@/commons/config-hoc';
+import { getUsers, del } from "@/api/user"
 
 @config({
     path: '/users',
@@ -33,14 +35,14 @@ export default class UserCenter extends Component {
                 field: 'position',
                 label: '职位',
                 placeholder: '请选择职位',
-                itemStyle: {flex: '0 0 200px'}, // 固定宽度
+                itemStyle: { flex: '0 0 200px' }, // 固定宽度
             },
             {
                 type: 'select',
                 field: 'job',
                 label: '工作',
                 placeholder: '请选择工作',
-                itemStyle: {flex: '0 0 200px'}, // 固定宽度
+                itemStyle: { flex: '0 0 200px' }, // 固定宽度
             },
         ],
         [
@@ -50,7 +52,7 @@ export default class UserCenter extends Component {
                 field: 'name',
                 label: '用户名',
                 placeholder: '请输入用户名',
-                itemStyle: {flex: '0 0 200px'}, // 固定宽度
+                itemStyle: { flex: '0 0 200px' }, // 固定宽度
             },
             {
                 collapsedShow: true,
@@ -61,14 +63,14 @@ export default class UserCenter extends Component {
                 max: 150,
                 step: 1,
                 placeholder: '请输入年龄',
-                itemStyle: {flex: '0 0 200px'}, // 固定宽度
+                itemStyle: { flex: '0 0 200px' }, // 固定宽度
             },
         ],
     ];
 
     columns = [
-        {title: '用户名', dataIndex: 'name', key: 'name'},
-        {title: '年龄', dataIndex: 'age', key: 'age'},
+        { title: '用户名', dataIndex: 'name', key: 'name' },
+        { title: '年龄', dataIndex: 'age', key: 'age' },
         {
             title: '工作', dataIndex: 'job', key: 'job',
             render: (value) => {
@@ -86,7 +88,7 @@ export default class UserCenter extends Component {
         {
             title: '操作', dataIndex: 'operator', key: 'operator',
             render: (value, record) => {
-                const {id, name} = record;
+                const { id, name } = record;
                 const items = [
                     {
                         label: '编辑',
@@ -97,57 +99,75 @@ export default class UserCenter extends Component {
                         color: 'red',
                         confirm: {
                             title: `您确定删除"${name}"?`,
-                            onConfirm: () => this.handleSearch(),
+                            onConfirm: () => this.handleDelete(id),
                         },
                     }
                 ];
 
-                return <Operator items={items}/>
+                return <Operator items={items} />
             },
         }
     ];
 
     componentDidMount() {
-        this.handleSearch();
+        this.fetchUsers()
     }
 
-    handleSearch = () => {
-        const {params, pageNum, pageSize} = this.state;
-        console.log(params, pageNum, pageSize);
-
-        const dataSource = [];
-        for (let i = 0; i < pageSize; i++) {
-            const id = pageSize * (pageNum - 1) + i + 1;
-            dataSource.push({id: `${id}`, name: `张三${id}`, age: 23, job: '11', position: '22'});
-        }
-
-        this.setState({dataSource, total: 100});
-    };
+    /**
+     * 获取所有用户列表
+     */
+    fetchUsers() {
+        this.setState({ loading: true })
+        const { params, pageNum, pageSize } = this.state;
+        params.page = pageNum
+        params.pageSize = pageSize
+        getUsers(params).then(users => {
+            this.setState({ dataSource: users.data, total: users.total });
+        })
+            .finally(() => this.setState({ loading: false }));
+    }
 
     fetchOptions = () => {
         const jobs = [
-            {value: '11', label: '产品经理'},
-            {value: '22', label: '测试专员'},
-            {value: '33', label: '前端开发'},
-            {value: '44', label: '后端开发'},
+            { value: '11', label: '产品经理' },
+            { value: '22', label: '测试专员' },
+            { value: '33', label: '前端开发' },
+            { value: '44', label: '后端开发' },
         ];
 
         const positions = [
-            {value: '11', label: 'CEO'},
-            {value: '22', label: 'CFO'},
-            {value: '33', label: 'CTO'},
-            {value: '44', label: 'COO'},
+            { value: '11', label: 'CEO' },
+            { value: '22', label: 'CFO' },
+            { value: '33', label: 'CTO' },
+            { value: '44', label: 'COO' },
         ];
 
-        this.setState({jobs, positions});
+        this.setState({ jobs, positions });
 
-        return Promise.resolve({job: jobs, position: positions})
+        return Promise.resolve({ job: jobs, position: positions })
     };
+
+    handleSearch() {
+        this.fetchUsers()
+    }
 
     handleAdd = () => {
-        // TODO
         this.props.history.push('/users/_/UserEdit/:id');
-    };
+    }
+
+    handleDelete(id) {
+        this.setState({ loading: true })
+        del({ id }).then(() => {
+            for (let index in this.state.dataSource) {
+                if (this.state.dataSource[index].id === id) {
+                    this.state.dataSource.splice(index, 1)
+                }
+            }
+        })
+            .finally(() => {
+                this.setState({ loading: false })
+            })
+    }
 
     render() {
         const {
@@ -157,26 +177,25 @@ export default class UserCenter extends Component {
             collapsed,
             dataSource,
         } = this.state;
-        console.log('render users');
         return (
             <PageContent>
                 <QueryBar
                     showCollapsed
                     collapsed={collapsed}
-                    onCollapsedChange={collapsed => this.setState({collapsed})}
+                    onCollapsedChange={collapsed => this.setState({ collapsed })}
                 >
                     <QueryItem
                         collapsed={collapsed}
                         loadOptions={this.fetchOptions}
                         items={this.queryItems}
-                        onSubmit={params => this.setState({params}, this.handleSearch)}
-                        extra={<Button type="primary" icon="user-add" onClick={this.handleAdd}>添加用户</Button>}
+                        onSubmit={params => this.setState({ params }, this.handleSearch)}
+                    // extra={<Button type="primary" icon="user-add" onClick={this.handleAdd}>添加用户</Button>}
                     />
                 </QueryBar>
 
                 <ToolBar
                     items={[
-                        {type: 'primary', text: '添加用户', icon: 'user-add', onClick: this.handleAdd}
+                        { type: 'primary', text: '添加用户', icon: 'user-add', onClick: this.handleAdd }
                     ]}
                 />
 
@@ -191,14 +210,21 @@ export default class UserCenter extends Component {
                     total={total}
                     pageNum={pageNum}
                     pageSize={pageSize}
-                    onPageNumChange={pageNum => this.setState({pageNum}, this.handleSearch)}
-                    onPageSizeChange={pageSize => this.setState({pageSize, pageNum: 1}, this.handleSearch)}
+                    onPageNumChange={pageNum => this.setState({ pageNum }, this.handleSearch)}
+                    onPageSizeChange={pageSize => this.setState({ pageSize, pageNum: 1 }, this.handleSearch)}
                 />
 
                 <FixBottom>
                     <Button>导出当前页</Button>
                     <Button type="primary">导出所有</Button>
                 </FixBottom>
+
+                {/* <UserEdit
+                    user={user}
+                    visible={visible}
+                    onOk={(user) => this.onOke(user)}
+                    onCancel={() => this.setState({ visible: false })}
+                /> */}
             </PageContent>
         );
     }
