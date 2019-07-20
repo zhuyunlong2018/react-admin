@@ -1,5 +1,8 @@
 import { sxAjax } from "@/commons/ajax"
 
+//用户登录
+export const login = (params, options) => sxAjax.post("admin/login", params, options)
+
 //获取所有用户列表
 export const getUsers = params => sxAjax.get("admin/users/getUsers", params)
 

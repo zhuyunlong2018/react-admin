@@ -135,7 +135,6 @@ export default {
      */
     setLocal: (local) => {
         const localI18n = i18n.find(item => item.local === local).i18n;
-
         setItem('system-local', local);
 
         return {local: local, i18n: localI18n}

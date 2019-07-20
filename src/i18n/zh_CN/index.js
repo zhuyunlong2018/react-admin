@@ -11,6 +11,7 @@ export default {
         timeOut: '超时',
     },
     menu: {
+        //TODO 将后台设置的本地化合并到此对象中
         menus: '菜单&权限',
         codeGenerator: '代码生成',
         home: '首页',

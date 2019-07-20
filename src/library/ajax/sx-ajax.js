@@ -23,7 +23,8 @@
  * * * * * * * * * * * * * * * * * * * * * * * **/
 
 import axios from 'axios';
-import {stringify} from 'qs';
+import { stringify } from 'qs';
+import { getLoginUser } from "@/commons"
 
 export default class SXAjax {
     /**
@@ -36,10 +37,10 @@ export default class SXAjax {
      * @param isMock 区分哪些请求需要mock，比如：url以约定'/mock'开头的请求，使用mock等方式。
      */
     constructor({
-                    onShowSuccessTip = (/* response, successTip  */) => true,
-                    onShowErrorTip = (/* err, errorTip */) => true,
-                    isMock = (/* url, data, method, options */) => false,
-                } = {}) {
+        onShowSuccessTip = (/* response, successTip  */) => true,
+        onShowErrorTip = (/* err, errorTip */) => true,
+        isMock = (/* url, data, method, options */) => false,
+    } = {}) {
         this.instance = axios.create();
         this.mockInstance = axios.create();
         this.setDefaultOption(this.instance);
@@ -57,10 +58,16 @@ export default class SXAjax {
         // instance.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
         // instance.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
         const token = document.head.querySelector('meta[name="csrf-token"]');
-        //laravel csrf验证
-        instance.defaults.headers.post['X-CSRF-TOKEN'] = token.content;
+        //laravel csrf验证???
+        instance.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+
+        //jwt token
+        let user = getLoginUser()
+        if (user) {
+            instance.defaults.headers.common['Authorization'] = "Bearer" + user.token;
+        }
         instance.defaults.headers.post['Content-Type'] = 'application/json';
-        instance.defaults.headers.put['Content-Type'] = 'application/json';
+        instance.defaults.headers.get['Content-Type'] = 'application/json';
         instance.defaults.baseURL = '/';
         instance.defaults.withCredentials = true; // 跨域携带cookie
     }

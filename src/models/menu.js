@@ -1,13 +1,12 @@
-import {getTopNodeByNode} from '@/library/utils/tree-utils';
-import {uniqueArray} from '@/library/utils';
-import {getMenuTreeDataAndPermissions, getSelectedMenuByPath} from '../commons';
-import {getCurrentLocal} from '@/i18n';
-import {getMenus} from "@/api/menu"
+import { getTopNodeByNode } from '@/library/utils/tree-utils';
+import { uniqueArray } from '@/library/utils';
+import { getMenuTreeDataAndPermissions, getSelectedMenuByPath } from '../commons';
+import { getCurrentLocal } from '@/i18n';
+import { getMenus } from "@/api/menu"
 
 export const types = {
     GET_MENU_STATUS: 'MENU:GET_MENU_STATUS',    // 防止各个模块冲突，预订[模块名:]开头
 };
-
 export default {
     initialState: {
         loading: false,         // 请求菜单loading
@@ -28,31 +27,32 @@ export default {
      * 获取系统菜单
      */
     getMenus: {
-        payload: ({params} = {}) => getMenus(params),
+        payload: ({ params } = {}) => getMenus(params),
         reducer: {
-            resolve: (state, {payload: menus}) => {
-                
+            resolve: (state, { payload: menus }) => {
+
                 // 首次获取数据之后进行国际化处理
                 const i18n = getCurrentLocal();
                 const localedMenus = menus.map(item => {
-                    const {local} = item;
+                    const { local } = item;
                     const text = i18n.menu[local];
-                    if (text) return {...item, text};
-                    return {...item};
+                    if (text) return { ...item, text };
+                    return { ...item };
                 });
-                const {menuTreeData} = getMenuTreeDataAndPermissions(localedMenus);
 
-                return {menus: menuTreeData};
+                const { menuTreeData } = getMenuTreeDataAndPermissions(localedMenus);
+
+                return { menus: menuTreeData };
             },
         },
     },
 
-    setKeepOtherOpen: (keepOtherOpen) => ({keepOtherOpen}),
-    setOpenKeys: (openKeys) => ({openKeys}),
-    setMenus: (menus) => ({menus}),
+    setKeepOtherOpen: (keepOtherOpen) => ({ keepOtherOpen }),
+    setOpenKeys: (openKeys) => ({ openKeys }),
+    setMenus: (menus) => ({ menus }),
     getMenuStatus: (arg, state) => {
         const path = window.location.pathname;
-        const {keepOtherOpen} = state;
+        const { keepOtherOpen } = state;
         let openKeys = [...state.openKeys];
         let selectedMenu = getSelectedMenuByPath(path, state.menus);
         let topMenu = {};

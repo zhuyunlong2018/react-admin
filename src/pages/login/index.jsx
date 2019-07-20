@@ -6,6 +6,7 @@ import config from '@/commons/config-hoc';
 import Local from '@/layouts/header-i18n';
 import Color from '@/layouts/header-color-picker';
 import { ROUTE_BASE_NAME } from '@/router/AppRouter';
+import { login } from "@/api/user"
 import './style.less'
 
 function hasErrors(fieldsError) {
@@ -36,7 +37,7 @@ export default class extends Component {
 
         // 开发时方便测试，填写表单
         if (process.env.NODE_ENV === 'development') {
-            setFieldsValue({ userName: 'admin', password: '111' });
+            setFieldsValue({ userName: 'admin', password: '123456' });
         }
     }
 
@@ -47,25 +48,16 @@ export default class extends Component {
                 this.setState({ loading: true, message: '' });
 
                 // TODO 发送请求进行登录，一下为前端硬编码，模拟请求
-                this.props.ajax
-                    .post('/admin/login', values, { noEmpty: true, successTip: '请求成功！' })
-                    .then(res => {
+                login(values, { noEmpty: true, successTip: '请求成功！' })
+                    .then(user => {
                         this.setState({ loading: false });
-                        console.log(res)
-                        if (res.code === 200) {
-                            setLoginUser({
-                                id: 'tempUserId',
-                                name: 'Admin',
-                            });
-                            // 跳转页面，优先跳转上次登出页面
-                            const lastHref = window.sessionStorage.getItem('last-href');
+                        setLoginUser(user);
+                        // 跳转页面，优先跳转上次登出页面
+                        const lastHref = window.sessionStorage.getItem('last-href');
 
-                            // 强制跳转 进入系统之后，需要一些初始化工作，需要所有的js重新加载
-                            window.location.href = lastHref || `${ROUTE_BASE_NAME}/`;
-                            // this.props.history.push(lastHref || '/');
-                        } else {
-                            this.setState({ message: '用户名或密码错误！' });
-                        }
+                        // 强制跳转 进入系统之后，需要一些初始化工作，需要所有的js重新加载
+                        window.location.href = lastHref || `${ROUTE_BASE_NAME}/`;
+                        this.props.history.push(lastHref || '/');
                     })
                     .finally(() => {
                         this.setState({ loading: false });
@@ -130,7 +122,7 @@ export default class extends Component {
                     <div styleName="error-tip">{message}</div>
                     <div styleName="tip">
                         <span>{local.userName}：admin </span>
-                        <span>{local.password}：111</span>
+                        <span>{local.password}：123456</span>
                     </div>
                 </div>
             </div>
