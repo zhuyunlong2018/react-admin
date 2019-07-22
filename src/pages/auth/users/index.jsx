@@ -166,11 +166,9 @@ export default class UserCenter extends Component {
     handleDelete(id) {
         this.setState({ loading: true })
         del({ id }).then(() => {
-            for (let index in this.state.dataSource) {
-                if (this.state.dataSource[index].id === id) {
-                    this.state.dataSource.splice(index, 1)
-                }
-            }
+            this.setState({
+                dataSource: this.state.dataSource.filter(e => e.id !== id)
+            })
         })
             .finally(() => {
                 this.setState({ loading: false })
@@ -179,13 +177,19 @@ export default class UserCenter extends Component {
 
     onOke(user) {
         if (this.state.user) {
-            for (let index in this.state.dataSource) {
-                if (this.state.dataSource[index].id === user.id) {
-                    this.state.dataSource[index] = user
+            let dataSource = [ ...this.state.dataSource ]
+            for (let index in dataSource) {
+                if (dataSource[index].id === user.id) {
+                    dataSource[index] = user
                 }
             }
+            this.setState({
+                dataSource
+            })
         } else {
-            this.state.dataSource.push(user)
+            this.setState({
+                dataSource: [...this.state.dataSource, user]
+            })
         }
         this.setState({ visible: false })
     }

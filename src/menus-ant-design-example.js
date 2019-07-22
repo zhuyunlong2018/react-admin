@@ -1,3 +1,6 @@
+/**
+ * 已废弃，改为从后台获取数据
+ */
 export default [
     {
         key: '/example/antd/async-select', 

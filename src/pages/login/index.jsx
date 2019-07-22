@@ -6,7 +6,7 @@ import config from '@/commons/config-hoc';
 import Local from '@/layouts/header-i18n';
 import Color from '@/layouts/header-color-picker';
 import { ROUTE_BASE_NAME } from '@/router/AppRouter';
-import { login } from "@/api/user"
+import { login } from "@/api/admin"
 import './style.less'
 
 function hasErrors(fieldsError) {

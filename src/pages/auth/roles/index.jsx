@@ -68,11 +68,9 @@ export default class RoleList extends Component {
         // TODO
         this.setState({ loading: true });
         del({ id }).then(() => {
-            for (let index in this.state.dataSource) {
-                if (this.state.dataSource[index].id === id) {
-                    this.state.dataSource.splice(index, 1)
-                }
-            }
+            this.setState({
+                dataSource: this.state.dataSource.filter(e => e.id !== id)
+            })
         })
             .finally(() => this.setState({ loading: false }));
     };
@@ -83,13 +81,19 @@ export default class RoleList extends Component {
 
     onOke(role) {
         if (this.state.role) {
-            for (let index in this.state.dataSource) {
-                if (this.state.dataSource[index].id === role.id) {
-                    this.state.dataSource[index] = role
+            let dataSource = [...this.state.dataSource]
+            for (let index in dataSource) {
+                if (dataSource[index].id === role.id) {
+                    dataSource[index] = role
                 }
             }
+            this.setState({
+                dataSource
+            })
         } else {
-            this.state.dataSource.push(role)
+            this.setState({
+                dataSource: [...this.state.dataSource, role]
+            })
         }
 
         this.setState({ visible: false })

@@ -16,7 +16,7 @@ class Plugin {
             pagePath,
             ignored,
             output,
-            watch,
+            watch = false,
             template,
             displayLog = false,
         } = options;

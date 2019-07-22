@@ -159,6 +159,7 @@ export default class SXAjax {
                 cancelToken: new CancelToken(c => cancel = c),
                 ...options,
             }).then(response => {
+                //TODO 后端返回未登录、登录失效等errorCode，进行跳转登录页面
                 if (response.data.code === 200) {
                     this.onShowSuccessTip(response, successTip);
                     resolve(response.data.data, response);
@@ -167,8 +168,6 @@ export default class SXAjax {
                     reject(response.data);
                 }
             }, err => {
-                const isCanceled = err && err.message && err.message.canceled;
-                if (isCanceled) return; // 如果是用户主动cancel，不做任何处理，不会触发任何函数
                 this.onShowErrorTip(err, errorTip);
                 reject(err);
             }).catch(error => {

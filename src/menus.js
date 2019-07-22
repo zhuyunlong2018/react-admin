@@ -1,6 +1,7 @@
 import antdMenus from './menus-ant-design-example';
 /*
 * 菜单数据 返回Promise各式，支持前端硬编码、异步获取菜单数据
+* 已废弃，改为从后台获取数据
 * */
 export default function getMenus(userId) {
     // TODO 根据userId获取菜单数据 或在此文件中前端硬编码菜单

@@ -484,7 +484,8 @@ module.exports = function (webpackEnv) {
                 pagePath: path.resolve(__dirname, '../src/pages'),
                 ignored: [],
                 output: path.resolve(__dirname, '../src/pages/page-routes.js'),
-                watch: isEnvDevelopment,
+                //TODO 存在开发时修改文件，经常无法找到routers的bug，暂时关闭watch操作
+                // watch: isEnvDevelopment,
             }),
             // Generates an `index.html` file with the <script> injected.
             new HtmlWebpackPlugin(

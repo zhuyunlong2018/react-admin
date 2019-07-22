@@ -11,18 +11,17 @@ import {toLogin} from './index';
  */
 function getErrorTip({error, errorTip}) {
     const ajaxTip = getCurrentLocal()?.ajaxTip || {};
-
     if (errorTip && errorTip !== true) return errorTip;
 
     if (error && error.response) {
-        const {status, message} = error.response;
+        const {status, data} = error.response;
 
-        if (status === 401) { // 需要登录
+        if (data.code === 4002) { // 需要登录
             return toLogin();
         }
 
         // 后端自定义信息
-        if (message) return message;
+        if (data.msg) return data.msg;
 
         if (status === 403) {
             return ajaxTip.noAccess;
