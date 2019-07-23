@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, Form, Spin, Table, Icon, Row, Col } from 'antd';
+import { Modal, Form, Spin, Table, Icon, Row, Col, Tag } from 'antd';
 import { FormElement } from '@/library/antd';
 import { convertToTree, getGenerationKeys } from "@/library/utils/tree-utils";
 import { arrayRemove, arrayPush } from '@/library/utils';
@@ -28,10 +28,10 @@ export default class RoleEdit extends Component {
         {
             title: '类型', dataIndex: 'type', key: 'type', width: 80,
             render: value => {
-                if (value === '1') return '菜单';
-                if (value === '2') return '功能';
+                if (value === 1) return <Tag color="volcano">菜单</Tag>;
+                if (value === 2) return <Tag color="cyan">功能</Tag>;
                 // 默认都为菜单
-                return '菜单';
+                return <Tag color="volcano">菜单</Tag>;
             }
         },
         { title: 'path', dataIndex: 'path', key: 'path', width: 150 },

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Icon, Modal, Form, Row, Col } from 'antd';
+import { Table, Icon, Modal, Form, Row, Col, Tag } from 'antd';
 import config from '@/commons/config-hoc';
 import PageContent from '@/layouts/page-content';
 import { convertToTree } from "@/library/utils/tree-utils";
@@ -27,7 +27,7 @@ export default class index extends Component {
         // {title: 'key', dataIndex: 'key', key: 'key'},
         // {title: 'parentKey', dataIndex: 'parentKey', key: 'parentKey'},
         {
-            title: '名称', dataIndex: 'text', key: 'text', width: 200,
+            title: '名称', dataIndex: 'text', key: 'text', width: 250,
             render: (value, record) => {
                 const { icon } = record;
 
@@ -37,19 +37,19 @@ export default class index extends Component {
             }
         },
         { title: 'path', dataIndex: 'path', key: 'path', width: 100 },
-        { title: 'url', dataIndex: 'url', key: 'url' },
+        { title: 'url', dataIndex: 'url', key: 'url', width: 250 },
         { title: 'target', dataIndex: 'target', key: 'target', width: 60 },
         { title: '国际化', dataIndex: 'local', key: 'local', width: 60 },
         {
             title: '类型', dataIndex: 'type', key: 'type', width: 60,
             render: value => {
-                if (value === 1) return '菜单';
-                if (value === 2) return '功能';
+                if (value === 1) return <Tag color="volcano">菜单</Tag>;
+                if (value === 2) return <Tag color="cyan">功能</Tag>;
                 // 默认都为菜单
-                return '菜单';
+                return <Tag color="volcano">菜单</Tag>;
             }
         },
-        { title: '功能编码', dataIndex: 'code', key: 'code', width: 100 },
+        { title: '功能API编码', dataIndex: 'code', key: 'code', width: 150 },
         { title: '排序', dataIndex: 'order', key: 'order', width: 60 },
         {
             title: '操作', dataIndex: 'operator', key: 'operator', width: 150,
@@ -266,7 +266,7 @@ export default class index extends Component {
                             <Col span={12}>
                                 <FormElement
                                     disabled={form.getFieldValue('type') !== 2}
-                                    label="编码"
+                                    label="编码API"
                                     field="code"
                                 />
                             </Col>

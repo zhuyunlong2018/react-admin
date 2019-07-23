@@ -53,7 +53,8 @@ export default function handleError({error, errorTip}) {
     if (errorTip === false) return;
 
     const description = getErrorTip({error, errorTip});
-
+    console.log(ajaxTip.error)
+    console.log(description)
     notification.error({
         message: ajaxTip.error,
         description,
