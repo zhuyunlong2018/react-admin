@@ -3,19 +3,12 @@
 
 感谢开源社区，感谢Ant Design团队提供优秀的开源项目！
 ## 项目说明
-本项目fork自
-
-[react-admin]: https://github.com/sxfad/react-admin
-
+本项目fork自[react-admin](https://github.com/sxfad/react-admin)
 
 
 在此基础上的修改：
 
-1. mock数据修改为后端
-
-   [laravel]: https://gitee.com/zhuyunlong2018/ReactAdmin-Laravel
-
-   提供。
+1. mock数据修改为后端[laravel](https://gitee.com/zhuyunlong2018/ReactAdmin-Laravel)提供。
 
 2. 权限交由后端控制，后端根据权限提供前端路由。
 
