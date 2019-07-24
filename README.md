@@ -2,6 +2,33 @@
 基于[React](https://reactjs.org)、[Ant Design](https://ant.design/)的管理系统架构。
 
 感谢开源社区，感谢Ant Design团队提供优秀的开源项目！
+## 项目说明
+本项目fork自
+
+[react-admin]: https://github.com/sxfad/react-admin
+
+
+
+在此基础上的修改：
+
+1. mock数据修改为后端
+
+   [laravel]: https://gitee.com/zhuyunlong2018/ReactAdmin-Laravel
+
+   提供。
+
+2. 权限交由后端控制，后端根据权限提供前端路由。
+
+3. 整合axios请求到api目录。
+
+4. 关闭development时脚本监听文件变化重新生成路由文件（因为开发状态下经常修改文件导致找不到路由，还未解决bug）。
+
+5. 菜单路由为后端提供，国际化功能未整合完成。
+
+
+
+以下为react-admin项目readme:
+
 
 ## 文档地址
 最新文档[在这里](https://open.vbill.cn/react-admin)

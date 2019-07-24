@@ -3,6 +3,9 @@ import { sxAjax } from "@/commons/ajax"
 //获取后台系统菜单
 export const getMenus = params => sxAjax.get("admin/menus/getMenus", params)
 
+//获取前端页面菜单路由
+export const getRoutes = params => sxAjax.get("admin/menus/getUserRoutes", params)
+
 //添加菜单
 export const add = params => sxAjax.post("admin/menus/add", params)
 

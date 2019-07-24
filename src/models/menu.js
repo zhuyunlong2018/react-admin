@@ -2,7 +2,7 @@ import { getTopNodeByNode } from '@/library/utils/tree-utils';
 import { uniqueArray } from '@/library/utils';
 import { getMenuTreeDataAndPermissions, getSelectedMenuByPath } from '../commons';
 import { getCurrentLocal } from '@/i18n';
-import { getMenus } from "@/api/menu"
+import { getRoutes } from "@/api/menu"
 
 export const types = {
     GET_MENU_STATUS: 'MENU:GET_MENU_STATUS',    // 防止各个模块冲突，预订[模块名:]开头
@@ -26,8 +26,8 @@ export default {
     /**
      * 获取系统菜单
      */
-    getMenus: {
-        payload: ({ params } = {}) => getMenus(params),
+    getRoutes: {
+        payload: ({ params } = {}) => getRoutes(params),
         reducer: {
             resolve: (state, { payload: menus }) => {
 
