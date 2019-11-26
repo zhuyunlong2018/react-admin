@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
     Form,
     Row,
@@ -7,9 +7,9 @@ import {
     Popconfirm,
 } from 'antd';
 import uuid from 'uuid/v4';
-import {FormElement, Operator, rowDraggable, TableEditable} from '@/library/antd';
-import {connect} from "@/models";
-import {typeOptions, getTypeByMysqlType} from "@/pages/generator/utils";
+import { FormElement, Operator, rowDraggable, TableEditable } from '@/library/antd';
+import { connect } from "@/models";
+import { typeOptions, getTypeByMysqlType } from "@/pages/generator/utils";
 
 const Table = rowDraggable(TableEditable);
 
@@ -57,10 +57,10 @@ export default class EditPage extends Component {
                 decorator: {
                     rules: [
                         // TODO 字段名合法性校验
-                        {required: true, message: '请输入字段名！'},
+                        { required: true, message: '请输入字段名！' },
                         {
                             validator: (rule, value, callback) => {
-                                const {fields} = this.props.editPage;
+                                const { fields } = this.props.editPage;
                                 let count = 0;
 
                                 fields.value.forEach(item => {
@@ -88,21 +88,21 @@ export default class EditPage extends Component {
                 placeholder: '请输入中文名',
                 decorator: {
                     rules: [
-                        {required: true, message: '请输入中文名！'},
+                        { required: true, message: '请输入中文名！' },
                     ],
                     onKeyUp: (e) => {
                         console.log(e);
                     },
                 },
                 onPressEnter: (e) => {
-                    const {form: {getFieldValue, setFieldsValue}} = this.props;
+                    const { form: { getFieldValue, setFieldsValue } } = this.props;
                     const value = getFieldValue('fields');
                     const currentTr = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
                     const nextTr = currentTr.nextSibling;
 
                     if (!nextTr) { // 当前输入框在最后一行，新增一行，并且新增行第一个输入框获取焦点
-                        value.push({id: uuid(), title: '', dataIndex: ''});
-                        setFieldsValue({fields: value});
+                        value.push({ id: uuid(), title: '', dataIndex: '' });
+                        setFieldsValue({ fields: value });
                         setTimeout(() => currentTr.nextSibling.getElementsByTagName('input')[0].focus());
                     } else {
                         nextTr.getElementsByTagName('input')[0].focus();
@@ -121,7 +121,7 @@ export default class EditPage extends Component {
                 decorator: {
                     initialValue: 'input',
                     rules: [
-                        {required: true, message: '请选择类型'},
+                        { required: true, message: '请选择类型' },
                     ],
                 },
                 getValue: e => e,
@@ -133,8 +133,8 @@ export default class EditPage extends Component {
             width: '20%',
             dataIndex: 'operator',
             render: (text, record) => {
-                const {id, title, dataIndex} = record;
-                const {form: {getFieldValue, setFieldsValue}} = this.props;
+                const { id, title, dataIndex } = record;
+                const { form: { getFieldValue, setFieldsValue } } = this.props;
                 const value = getFieldValue('fields');
 
                 const deleteItem = {
@@ -144,7 +144,7 @@ export default class EditPage extends Component {
                         title: `您确定要删除"${title || dataIndex}"吗？`,
                         onConfirm: () => {
                             const newValue = value.filter(item => item.id !== id);
-                            setFieldsValue({fields: newValue});
+                            setFieldsValue({ fields: newValue });
                         },
                     },
                 };
@@ -154,21 +154,21 @@ export default class EditPage extends Component {
                     Reflect.deleteProperty(deleteItem, 'confirm');
                     deleteItem.onClick = () => {
                         const newValue = value.filter(item => item.id !== id);
-                        setFieldsValue({fields: newValue});
+                        setFieldsValue({ fields: newValue });
                     };
                 }
 
                 const items = [
                     deleteItem,
                 ];
-                return <Operator items={items}/>;
+                return <Operator items={items} />;
 
             },
         },
     ];
 
     componentWillMount() {
-        const {formRef, form, validate} = this.props;
+        const { formRef, form, validate } = this.props;
         if (formRef) formRef(form);
         if (validate) validate(this.validate);
 
@@ -177,7 +177,7 @@ export default class EditPage extends Component {
                 if (dirs && dirs.length) {
                     const dir = dirs.find(item => (item.value.endsWith('/src/pages') || item.value.endsWith('\\src\\pages')));
                     if (dir) {
-                        form.setFieldsValue({outPutDir: dir.value});
+                        form.setFieldsValue({ outPutDir: dir.value });
                     }
                 }
             },
@@ -185,7 +185,7 @@ export default class EditPage extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const {form: {setFieldsValue}} = this.props;
+        const { form: { setFieldsValue } } = this.props;
         const oldName = this.props.baseInfo.name.value;
         const name = nextProps.baseInfo.name.value;
         const capitalName = nextProps.baseInfo.capitalName.value;
@@ -200,7 +200,7 @@ export default class EditPage extends Component {
     }
 
     validate = () => {
-        const {form} = this.props;
+        const { form } = this.props;
 
         const promises = [
             form,
@@ -219,7 +219,7 @@ export default class EditPage extends Component {
     };
 
     handleSyncListPageFields = () => {
-        const {fields} = this.props.listPage;
+        const { fields } = this.props.listPage;
         const listPageFieldsValue = fields.value || [];
         const oldFieldsValue = [...this.props.editPage.fields.value];
 
@@ -247,62 +247,62 @@ export default class EditPage extends Component {
         const newFieldsValue = oldFieldsValue.filter(item => item.title || item.dataIndex);
 
         console.log(newFieldsValue);
-        this.props.form.setFieldsValue({fields: newFieldsValue});
+        this.props.form.setFieldsValue({ fields: newFieldsValue });
     };
 
     renderTableTitle = () => {
-        const {fields: {value}} = this.props.editPage;
-        const {fields: {value: listPageFields}} = this.props.listPage;
+        const { fields: { value } } = this.props.editPage;
+        const { fields: { value: listPageFields } } = this.props.listPage;
         const hasListPageField = listPageFields && listPageFields.length && !(listPageFields.length === 1 && !listPageFields[0].dataIndex && !listPageFields[0].title);
 
-        const noSameField = !value?.length || (value.length === 1 && !value[0].dataIndex && !value[0].title);
+        const noSameField = !value ?.length || (value.length === 1 && !value[0].dataIndex && !value[0].title);
 
         return (
             <div>
                 {noSameField ? (
                     <Button disabled={!hasListPageField} onClick={this.handleSyncListPageFields}>同步列表页</Button>
                 ) : (
-                    <Popconfirm title="以下表单中同名字段保留，新增不同名字段" onConfirm={this.handleSyncListPageFields} okText="确定" cancelText="取消">
-                        <Button disabled={!hasListPageField}>同步列表页</Button>
-                    </Popconfirm>
-                )}
-                <this.ClearTable field="fields"/>
-                <Button style={{marginLeft: 8}} type="primary" onClick={this.props.onPreviewCode}>代码预览</Button>
+                        <Popconfirm title="以下表单中同名字段保留，新增不同名字段" onConfirm={this.handleSyncListPageFields} okText="确定" cancelText="取消">
+                            <Button disabled={!hasListPageField}>同步列表页</Button>
+                        </Popconfirm>
+                    )}
+                <this.ClearTable field="fields" />
+                <Button style={{ marginLeft: 8 }} type="primary" onClick={this.props.onPreviewCode}>代码预览</Button>
             </div>
         );
     };
 
-    ClearTable = ({field, type = 'danger'}) => {
+    ClearTable = ({ field, type = 'danger' }) => {
         const fieldValue = this.props.form.getFieldValue(field);
-        const isEmpty = !fieldValue?.length || (fieldValue.length === 1 && !fieldValue[0].title);
+        const isEmpty = !fieldValue ?.length || (fieldValue.length === 1 && !fieldValue[0].title);
 
         if (isEmpty) return null;
 
         return (
-            <Popconfirm title="您确认清空吗？" onConfirm={() => this.props.form.setFieldsValue({[field]: []})}>
+            <Popconfirm title="您确认清空吗？" onConfirm={() => this.props.form.setFieldsValue({ [field]: [] })}>
                 {type === 'link' ? (
-                    <a style={{marginLeft: 8, color: 'red'}}>清空</a>
+                    <a style={{ marginLeft: 8, color: 'red' }}>清空</a>
                 ) : (
-                    <Button style={{marginLeft: 8}} type={type}>清空</Button>
-                )}
+                        <Button style={{ marginLeft: 8 }} type={type}>清空</Button>
+                    )}
             </Popconfirm>
         );
     };
 
-    handleSortEnd = ({oldIndex, newIndex, field}) => {
-        const {setFieldsValue, getFieldValue} = this.props.form;
+    handleSortEnd = ({ oldIndex, newIndex, field }) => {
+        const { setFieldsValue, getFieldValue } = this.props.form;
         const dataSource = [...getFieldValue(field)];
 
         dataSource.splice(newIndex, 0, dataSource.splice(oldIndex, 1)[0]);
 
-        setFieldsValue({[field]: dataSource})
+        setFieldsValue({ [field]: dataSource })
     };
 
-    FormElement = (props) => <FormElement form={this.props.form} {...props}/>;
+    FormElement = (props) => <FormElement form={this.props.form} {...props} />;
 
     render() {
         const {
-            form: {getFieldDecorator},
+            form: { getFieldDecorator },
             pagesDirectories,
         } = this.props;
 
@@ -310,30 +310,30 @@ export default class EditPage extends Component {
 
         return (
             <Form>
-                <FormElement type="hidden" field="template"/>
+                <FormElement type="hidden" field="template" />
                 <Row>
                     <Col span={14}>
-                        <div style={{display: 'flex'}}>
+                        <div style={{ display: 'flex' }}>
                             <FormElement
-                                wrapperStyle={{flex: 0}}
+                                wrapperStyle={{ flex: 0 }}
                                 label="目录/文件名"
                                 tip="可以继续填写子目录，比如：user/UserList.jsx，将自动创建user目录"
                                 type="select-tree"
                                 field="outPutDir"
                                 decorator={{
                                     rules: [
-                                        {required: true, message: '请选择生成文件的目录'},
+                                        { required: true, message: '请选择生成文件的目录' },
                                     ],
                                 }}
                                 width={200}
                                 showSearch
-                                dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
+                                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                                 options={pagesDirectories}
                                 treeDefaultExpandAll
                                 treeNodeLabelProp="shortValue"
                             />
                             <FormElement
-                                wrapperStyle={{flex: 1}}
+                                wrapperStyle={{ flex: 1 }}
                                 width="100%"
                                 label="/"
                                 labelWidth={24}
@@ -343,22 +343,22 @@ export default class EditPage extends Component {
                                 placeholder="请输入生成的文件名"
                                 decorator={{
                                     rules: [
-                                        {required: true, message: '请输入生成的文件名'},
+                                        { required: true, message: '请输入生成的文件名' },
                                     ],
                                 }}
                             />
                         </div>
                     </Col>
                 </Row>
-                {getFieldDecorator('fields', {getValueFromEvent: (nextDataSource) => nextDataSource, valuePropName: 'dataSource'})(
+                {getFieldDecorator('fields', { getValueFromEvent: (nextDataSource) => nextDataSource, valuePropName: 'dataSource' })(
                     <Table
                         size="small"
                         formRef={form => this.fieldsTableForm = form}
                         title={this.renderTableTitle}
                         columns={this.fieldsColumns}
                         helperClass="generator-helper-element"
-                        onSortEnd={({oldIndex, newIndex}) => this.handleSortEnd({oldIndex, newIndex, field: 'fields'})}
-                        newRecord={{type: 'input'}}
+                        onSortEnd={({ oldIndex, newIndex }) => this.handleSortEnd({ oldIndex, newIndex, field: 'fields' })}
+                        newRecord={{ type: 'input' }}
                     />
                 )}
             </Form>

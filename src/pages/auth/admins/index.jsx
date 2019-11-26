@@ -148,7 +148,7 @@ export default class AdminCenter extends Component {
                     items={[{
                         type: 'primary',
                         text: '添加管理员',
-                        icon: 'admin-add',
+                        icon: 'user-add',
                         onClick: this.handleAdd,
                         visible: hasPermission('admin:admins:add'),
                     }]}

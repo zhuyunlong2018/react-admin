@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
-import {Form, Row, Col, Button, Table} from 'antd';
-import {FormElement} from '@/library/antd';
-import {connect} from '@/models';
+import React, { Component } from 'react';
+import { Form, Row, Col, Button, Table } from 'antd';
+import { FormElement } from '@/library/antd';
+import { connect } from '@/models';
 
-@connect(state => ({database: state.database}))
+@connect(state => ({ database: state.database }))
 @Form.create({
     mapPropsToFields: (props) => {
         const fields = {};
@@ -24,8 +24,8 @@ import {connect} from '@/models';
 export default class DatabaseConfig extends Component {
     state = {};
 
-    componentWillMount() {
-        const {formRef, form, validate} = this.props;
+    UNSAFE_componentWillMount() {
+        const { formRef, form, validate } = this.props;
         if (formRef) formRef(form);
 
         if (validate) validate(this.validate)
@@ -37,7 +37,7 @@ export default class DatabaseConfig extends Component {
     }
 
     validate = () => {
-        const {form} = this.props;
+        const { form } = this.props;
 
         return new Promise((resolve, reject) => {
             form.validateFieldsAndScroll((err, values) => {
@@ -52,20 +52,20 @@ export default class DatabaseConfig extends Component {
 
     handleGetTableNames = () => {
         this.validate().then(values => {
-            const {action: {database}, form: {getFieldValue, setFieldsValue}} = this.props;
-
+            const { action: { database }, form: { getFieldValue, setFieldsValue } } = this.props;
             database.getTableNames({
                 params: values,
                 successTip: '获取数据库表成功',
                 errorTip: '获取数据库表失败',
                 onResolve: (data) => {
-                    if (data?.length && !getFieldValue('table')) {
+                    if (data ?.length && !getFieldValue('table')) {
                         const value = data[0];
 
-                        setFieldsValue({table: value});
+                        setFieldsValue({ table: value });
                         this.handleGetTableColumns(value);
                     }
-                }
+                },
+                onReject: (error) => { console.log(error) }
             });
         });
     };
@@ -74,14 +74,15 @@ export default class DatabaseConfig extends Component {
         this.validate().then(values => {
             this.props.action.database
                 .getTableColumns({
-                    params: {...values, table},
+                    params: { ...values, table },
                     successTip: '获取表格字段成功',
                     errorTip: '获取表格字段失败',
+                    onReject: error => { console.log(error) }
                 });
         });
     };
 
-    FormElement = (props) => <FormElement form={this.props.form} labelWidth={80} {...props}/>;
+    FormElement = (props) => <FormElement form={this.props.form} labelWidth={80} {...props} />;
 
     render() {
         const {
@@ -89,7 +90,6 @@ export default class DatabaseConfig extends Component {
             database: {
                 tableNames,
                 tableColumns,
-                gettingTableNames,
                 gettingTableColumns,
                 showConfig,
             },
@@ -114,7 +114,7 @@ export default class DatabaseConfig extends Component {
                             field="host"
                             decorator={{
                                 rules: [
-                                    {required: true, message: '请输入地址',},
+                                    { required: true, message: '请输入地址', },
                                 ],
                             }}
                         />
@@ -126,7 +126,7 @@ export default class DatabaseConfig extends Component {
                             field="port"
                             decorator={{
                                 rules: [
-                                    {required: true, message: '请输入端口',},
+                                    { required: true, message: '请输入端口', },
                                 ],
                             }}
                         />
@@ -138,7 +138,7 @@ export default class DatabaseConfig extends Component {
                             field="user"
                             decorator={{
                                 rules: [
-                                    {required: true, message: '请输入用户名',},
+                                    { required: true, message: '请输入用户名', },
                                 ],
                             }}
                         />
@@ -150,7 +150,7 @@ export default class DatabaseConfig extends Component {
                             field="password"
                             decorator={{
                                 rules: [
-                                    {required: true, message: '请输入密码',},
+                                    { required: true, message: '请输入密码', },
                                 ],
                             }}
                         />
@@ -162,7 +162,7 @@ export default class DatabaseConfig extends Component {
                             field="database"
                             decorator={{
                                 rules: [
-                                    {required: true, message: '请输入数据库',},
+                                    { required: true, message: '请输入数据库', },
                                 ],
                             }}
                         />
@@ -176,10 +176,10 @@ export default class DatabaseConfig extends Component {
                             field="table"
                             type="select"
                             allowClear
-                            options={tableNames.map(value => ({value, label: value}))}
+                            options={tableNames.map(value => ({ value, label: value }))}
                             decorator={{
                                 rules: [
-                                    {required: false, message: '请选择数据库表',},
+                                    { required: false, message: '请选择数据库表', },
                                 ],
                                 onChange: (value) => {
                                     this.handleGetTableColumns(value);
@@ -187,9 +187,9 @@ export default class DatabaseConfig extends Component {
                             }}
                         />
                     </Col>
-                    <Col span={span} style={{paddingLeft: 16, paddingTop: 3}}>
+                    <Col span={span} style={{ paddingLeft: 16, paddingTop: 3 }}>
                         <Button
-                            loading={gettingTableNames}
+                            // loading={gettingTableNames}
                             type="primary"
                             onClick={this.handleGetTableNames}
                         >获取数据库表名</Button>
@@ -201,12 +201,12 @@ export default class DatabaseConfig extends Component {
                     size="small"
                     pagination={false}
                     columns={[
-                        {title: '字段名', dataIndex: 'camelCaseName', key: 'camelCaseName'},
+                        { title: '字段名', dataIndex: 'camelCaseName', key: 'camelCaseName' },
                         // {title: '中文名', dataIndex: 'chinese', key: 'chinese'},
-                        {title: '类型', dataIndex: 'type', key: 'type'},
-                        {title: '长度', dataIndex: 'length', key: 'length'},
-                        {title: '是否可空', dataIndex: 'isNullable', key: 'isNullable', render: value => value ? '是' : '否'},
-                        {title: '注释', dataIndex: 'comment', key: 'comment'},
+                        { title: '类型', dataIndex: 'type', key: 'type' },
+                        { title: '长度', dataIndex: 'length', key: 'length' },
+                        { title: '是否可空', dataIndex: 'isNullable', key: 'isNullable', render: value => value ? '是' : '否' },
+                        { title: '注释', dataIndex: 'comment', key: 'comment' },
                     ]}
                     rowKey="camelCaseName"
                     dataSource={tableColumns}

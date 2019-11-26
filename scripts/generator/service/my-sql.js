@@ -19,7 +19,6 @@ function testConnection(options) {
                 resolve(true);
             }
         });
-
         connection.end();
     });
 }
@@ -50,6 +49,7 @@ function getTableNames(options) {
             const result = results.map(item => {
                 return item.table_name;
             });
+            
             resolve(result);
         });
 

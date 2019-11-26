@@ -217,6 +217,7 @@ export default class index extends Component {
             <PageContent styleName="root">
                 <ToolBar items={[{
                     type: 'primary',
+                    icon: 'plus',
                     text: '添加顶级',
                     onClick: this.handleAddTopMenu,
                     visible: hasPermission('admin:menus:add'),

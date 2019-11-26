@@ -111,7 +111,6 @@ export default class ThemeColorPicker extends Component {
         const {
             primaryColor = theme['@primary-color'],
             className,
-            local,
         } = this.props;
         const { toolTipVisible } = this.state;
         return (

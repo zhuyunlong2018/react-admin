@@ -10,18 +10,16 @@ import { firstLowerCase, firstUpperCase, allUpperCase } from './utils';
 @Form.create({
     mapPropsToFields: (props) => {
         const fields = {};
-
         Object.keys(props.baseInfo).forEach(key => {
             fields[key] = Form.createFormField({
                 ...props.baseInfo[key],
                 value: props.baseInfo[key].value,
             });
         });
-
         return fields;
     },
     onFieldsChange: (props, fields) => {
-        props.action.baseInfo.setFields(fields);
+        // props.action.baseInfo.setFields(fields);
     },
 })
 export default class BaseInfo extends Component {
@@ -33,7 +31,6 @@ export default class BaseInfo extends Component {
 
         if (validate) validate(this.validate)
     }
-
 
     componentDidMount() {
         this.props.onRef(this)
@@ -56,7 +53,6 @@ export default class BaseInfo extends Component {
 
     handleChange = (e) => {
         e.preventDefault();
-
         const { form: { setFieldsValue } } = this.props;
         const name = e.target.value;
 
@@ -64,7 +60,6 @@ export default class BaseInfo extends Component {
         const capitalName = firstUpperCase(name);
         const allCapitalName = allUpperCase(name);
         const pluralityName = pluralize(lowercaseName);
-
         setFieldsValue({
             lowercaseName,
             capitalName,
@@ -180,7 +175,7 @@ export default class BaseInfo extends Component {
                             field="ajaxPrefix"
                             decorator={{
                                 rules: [
-                                    {required: true, message: '请输入ajax请求地址前缀',},
+                                    { required: true, message: '请输入ajax请求地址前缀', },
                                 ],
                             }}
                         />
@@ -192,7 +187,7 @@ export default class BaseInfo extends Component {
                             field="routePath"
                             decorator={{
                                 rules: [
-                                    {required: true, message: '请输入页面路由地址',},
+                                    { required: true, message: '请输入页面路由地址', },
                                 ],
                             }}
                         />
