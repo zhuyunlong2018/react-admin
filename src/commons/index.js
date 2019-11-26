@@ -1,7 +1,7 @@
-import {session} from '@/library/utils/storage';
-import {getNodeByPropertyAndValue, convertToTree, renderNode} from '@/library/utils/tree-utils';
+import { session } from '@/library/utils/storage';
+import { getNodeByPropertyAndValue, convertToTree } from '@/library/utils/tree-utils';
 import pathToRegexp from "path-to-regexp/index";
-import {ROUTE_BASE_NAME} from '@/router/AppRouter';
+import { ROUTE_BASE_NAME } from '@/router/AppRouter';
 
 const CURRENT_USER_KEY = 'current-user';
 
@@ -14,7 +14,8 @@ const sessionStorage = window.sessionStorage;
  */
 export function hasPermission(code) {
     const loginUser = getLoginUser();
-    return loginUser?.permissions?.includes(code);
+    //TODO 登录用户权限融合
+    return loginUser ?.permissions ?.includes(code);
 }
 
 /**
@@ -22,7 +23,7 @@ export function hasPermission(code) {
  */
 export function setLoginUser(currentUser = {}) {
     // 将用户属性在这里展开，方便查看系统都用到了那些用户属性
-    const {id, name, avatar, token, permissions} = currentUser;
+    const { id, name, avatar, token, permissions } = currentUser;
     const userStr = JSON.stringify({
         id,             // 用户id 必须
         name,           // 用户名 必须
@@ -134,11 +135,12 @@ export function getSelectedMenuByPath(path, menuTreeData) {
  * @param menus 扁平化菜单数据
  */
 export function getMenuTreeDataAndPermissions(menus) {
-    // 用户权限code，通过菜单携带过来的 1 => 菜单 2 => 功能
-    const permissions = menus.map(item => {
-        if (item.type === 1) return item.key;
-        if (item.type === 2) return item.code;
-        return null;
+    // 用户权限
+    let permissions = []
+    menus.forEach(item => {
+        if (item.type === 2 && item.code) {
+            permissions.push(item.code)
+        }
     });
 
     // 获取菜单，过滤掉功能码
@@ -189,23 +191,7 @@ export function getMenuTreeDataAndPermissions(menus) {
     });
 
     const menuTreeData = convertToTree(orderedData);
-    return {menuTreeData, permissions}
-}
-
-/**
- * 树形菜单国际化处理
- * @param menuTreeData
- * @param i18n
- */
-export function setMenuI18n(menuTreeData, i18n) {
-    const treeData = [...menuTreeData];
-
-    renderNode(treeData, (item) => {
-        const text = i18n[item.local];
-        if (text) item.text = text;
-    });
-
-    return treeData;
+    return { menuTreeData, permissions }
 }
 
 /**

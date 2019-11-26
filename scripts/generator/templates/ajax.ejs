@@ -1,0 +1,13 @@
+import { sxAjax } from "@/commons/ajax"
+
+//获取列表分页
+export const list = params => sxAjax.get("<%= ajaxUrl %>/list", params)
+
+//添加
+export const add = params => sxAjax.post("<%= ajaxUrl %>/add", params)
+
+//编辑
+export const edit = params => sxAjax.put("<%= ajaxUrl %>/edit", params)
+
+//删除
+export const del = params => sxAjax.del("<%= ajaxUrl %>/del", params)

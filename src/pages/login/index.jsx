@@ -3,7 +3,6 @@ import { Helmet } from 'react-helmet';
 import { Form, Icon, Input, Button } from 'antd';
 import { setLoginUser } from '@/commons';
 import config from '@/commons/config-hoc';
-import Local from '@/layouts/header-i18n';
 import Color from '@/layouts/header-color-picker';
 import { ROUTE_BASE_NAME } from '@/router/AppRouter';
 import { login } from "@/api/admin"
@@ -20,11 +19,8 @@ function hasErrors(fieldsError) {
     noFrame: true,
     noAuth: true,
     keepAlive: false,
-    connect(state) {
-        return { local: state.system.i18n.login }
-    },
 })
-export default class extends Component {
+export default class Login extends Component {
     state = {
         loading: false,
         message: '',
@@ -67,8 +63,12 @@ export default class extends Component {
     };
 
     render() {
-        const { local } = this.props;
-        const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
+        const {
+            getFieldDecorator,
+            getFieldsError,
+            getFieldError,
+            isFieldTouched,
+        } = this.props.form;
         const { loading, message } = this.state;
 
         // Only show error after a field is touched.
@@ -76,25 +76,18 @@ export default class extends Component {
         const passwordError = isFieldTouched('password') && getFieldError('password');
         return (
             <div styleName="root" className="login-bg">
-                <Helmet
-                    title={local.title}
-                />
-
-                <div styleName="menu">
-                    <Color />
-                    <Local style={{ color: '#fff' }} />
-                </div>
+                <Helmet title="登录" />
                 <div styleName="logo" />
                 <div styleName="note" />
                 <div styleName="box">
-                    <div styleName="header">{local.title}</div>
+                    <div styleName="header">登录</div>
                     <Form onSubmit={this.handleSubmit}>
                         <Form.Item
                             validateStatus={userNameError ? 'error' : ''}
                             help={userNameError || ''}
                         >
                             {getFieldDecorator('userName', {
-                                rules: [{ required: true, message: local.userNameEmptyTip }],
+                                rules: [{ required: true, message: "请输入用户名" }],
                             })(
                                 <Input allowClear autoFocus prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="用户名" />
                             )}
@@ -104,7 +97,7 @@ export default class extends Component {
                             help={passwordError || ''}
                         >
                             {getFieldDecorator('password', {
-                                rules: [{ required: true, message: local.passwordEmptyTip }],
+                                rules: [{ required: true, message: "请输入密码" }],
                             })(
                                 <Input.Password prefix={<Icon type="lock" style={{ fontSize: 13 }} />} placeholder="密码" />
                             )}
@@ -116,13 +109,13 @@ export default class extends Component {
                             htmlType="submit"
                             disabled={hasErrors(getFieldsError())}
                         >
-                            {local.submit}
+                            登录
                         </Button>
                     </Form>
                     <div styleName="error-tip">{message}</div>
                     <div styleName="tip">
-                        <span>{local.userName}：admin </span>
-                        <span>{local.password}：123456</span>
+                        <span>用户名：admin </span>
+                        <span>密码：123456</span>
                     </div>
                 </div>
             </div>

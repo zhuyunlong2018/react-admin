@@ -25,8 +25,6 @@ const Table = rowDraggable(TableEditable);
         const editPage = props.editPage;
 
         [
-            'ajaxUrl',
-            'routePath',
             'outPutDir',
             'outPutFile',
             'template',
@@ -193,13 +191,9 @@ export default class EditPage extends Component {
         const capitalName = nextProps.baseInfo.capitalName.value;
 
         if (name !== oldName) {
-            const ajaxUrl = `/${name}`;
-            const routePath = `/${name}/_/edit/:id`;
             const outPutFile = `${name}/${capitalName}Edit.jsx`;
 
             setFieldsValue({
-                ajaxUrl,
-                routePath,
                 outPutFile,
             });
         }
@@ -354,29 +348,6 @@ export default class EditPage extends Component {
                                 }}
                             />
                         </div>
-                    </Col>
-                    <Col span={5}>
-                        <FormElement
-                            label="ajax"
-                            field="ajaxUrl"
-                            decorator={{
-                                rules: [
-                                    {required: true, message: '请输入ajax请求路径'},
-                                ],
-                            }}
-                        />
-                    </Col>
-
-                    <Col span={5}>
-                        <FormElement
-                            label="路由"
-                            field="routePath"
-                            decorator={{
-                                rules: [
-                                    {required: true, message: '请输入页面路由地址'},
-                                ],
-                            }}
-                        />
                     </Col>
                 </Row>
                 {getFieldDecorator('fields', {getValueFromEvent: (nextDataSource) => nextDataSource, valuePropName: 'dataSource'})(

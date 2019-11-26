@@ -4,13 +4,14 @@ import config from '@/commons/config-hoc';
 import PageContent from '@/layouts/page-content';
 import { convertToTree } from "@/library/utils/tree-utils";
 import { ToolBar, Operator, FormElement } from '@/library/antd';
+import { hasPermission } from '@/commons';
 import IconPicker from "@/components/icon-picker";
 import './style.less';
 import { getMenus, add, edit, del } from "@/api/menu"
 
 @config({
     path: '/menu-permission',
-    title: { local: 'menus', text: '菜单&权限', icon: 'lock' },
+    title: { text: '菜单&权限', icon: 'lock' },
 })
 @Form.create()
 export default class index extends Component {
@@ -39,7 +40,6 @@ export default class index extends Component {
         { title: 'path', dataIndex: 'path', key: 'path', width: 100 },
         { title: 'url', dataIndex: 'url', key: 'url', width: 250 },
         { title: 'target', dataIndex: 'target', key: 'target', width: 60 },
-        { title: '国际化', dataIndex: 'local', key: 'local', width: 60 },
         {
             title: '类型', dataIndex: 'type', key: 'type', width: 60,
             render: value => {
@@ -57,12 +57,14 @@ export default class index extends Component {
                 const items = [
                     {
                         label: '编辑',
+                        visible: hasPermission('admin:menus:edit'),
                         icon: 'form',
                         onClick: () => this.handleEditNode(record),
                     },
                     {
                         label: '删除',
                         icon: 'delete',
+                        visible: hasPermission('admin:menus:del'),
                         color: 'red',
                         confirm: {
                             title: '您请确定要删除此节点及其子节点吗？',
@@ -71,6 +73,7 @@ export default class index extends Component {
                     },
                     {
                         label: '添加子菜单',
+                        visible: hasPermission('admin:menus:edit'),
                         icon: 'folder-add',
                         onClick: () => this.handleAddSubMenu(record),
                     },
@@ -212,7 +215,12 @@ export default class index extends Component {
 
         return (
             <PageContent styleName="root">
-                <ToolBar items={[{ type: 'primary', text: '添加顶级', onClick: this.handleAddTopMenu }]} />
+                <ToolBar items={[{
+                    type: 'primary',
+                    text: '添加顶级',
+                    onClick: this.handleAddTopMenu,
+                    visible: hasPermission('admin:menus:add'),
+                }]} />
                 <Table
                     loading={loading}
                     columns={this.columns}
@@ -272,12 +280,6 @@ export default class index extends Component {
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={12}>
-                                <FormElement
-                                    label="国际化"
-                                    field="local"
-                                />
-                            </Col>
                             <Col span={12}>
                                 <FormElement
                                     label="排序"

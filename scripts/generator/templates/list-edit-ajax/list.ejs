@@ -10,7 +10,7 @@ import {<%if(queryItems && queryItems.length){%>
     ToolBar,<%}%>
 } from "@/library/antd";
 import PageContent from '@/layouts/page-content';
-import config from '@/commons/config-hoc';<% if(permissionPrefix){%>
+import config from '@/commons/config-hoc';<%if(permissionPrefix){%>
 import {hasPermission} from '@/commons';<%}%>
 import <%= capitalName %>Edit from './<%= capitalName %>Edit';
 
@@ -21,12 +21,12 @@ import <%= capitalName %>Edit from './<%= capitalName %>Edit';
 export default class <%= capitalName %>List extends Component {
     state = {
         loading: false,
-        dataSource: [],
-        total: 0,
-        pageSize: 10,
-        pageNum: 1,
+        dataSource: [],//列表数据
+        total: 0, //数据总条数
+        pageSize: 10, //每页数量
+        pageNum: 1, //当前页码
         params: {},
-        id: void 0,
+        formData: {},//添加、编辑表单数据
         visible: false,
     };<%if(queryItems && queryItems.length){%>
 
@@ -47,7 +47,7 @@ export default class <%= capitalName %>List extends Component {
             type: '<%= toolItems[i].type%>',
             text: '<%= toolItems[i].text%>',
             icon: '<%= toolItems[i].icon%>',<%if(permissionPrefix && toolItems[i].permission){%>
-            visible: hasPermission('<%= permissionPrefix %>_<%= toolItems[i].permission%>'),<%}%>
+            visible: hasPermission('<%= permissionPrefix %>:<%= toolItems[i].permission%>'),<%}%>
             onClick: () => {
                 // TODO
             },
@@ -60,13 +60,14 @@ export default class <%= capitalName %>List extends Component {
             type: '<%= bottomToolItems[i].type%>',
             text: '<%= bottomToolItems[i].text%>',
             icon: '<%= bottomToolItems[i].icon%>',<%if(permissionPrefix && bottomToolItems[i].permission){%>
-            visible: hasPermission('<%= permissionPrefix %>_<%= bottomToolItems[i].permission%>'),<%}%>
+            visible: hasPermission('<%= permissionPrefix %>:<%= bottomToolItems[i].permission%>'),<%}%>
             onClick: () => {
                 // TODO
             },
         },<%}%>
     ];<%}%>
 
+    //列表数据
     columns = [<% for (let i = 0;i<fields.length;i++){%>
         {title: '<%= fields[i].title%>', dataIndex: '<%= fields[i].dataIndex%>'},<%}%>
         {
@@ -74,11 +75,10 @@ export default class <%= capitalName %>List extends Component {
             key: 'operator',
             render: (text, record) => {
                 const {id, <%= fields[0].dataIndex%>} = record;
-                const successTip = `删除“${<%= fields[0].dataIndex%>}”成功！`;
                 const items = [
                     {
                         label: '修改',<% if(permissionPrefix){%>
-                        visible: hasPermission('<%= permissionPrefix %>_UPDATE'),<%}%>
+                        visible: hasPermission('<%= permissionPrefix %>:edit'),<%}%>
                         onClick: () => {
                             this.handleEdit(id);
                         },
@@ -86,17 +86,8 @@ export default class <%= capitalName %>List extends Component {
                     {
                         label: '删除',
                         color: 'red',<% if(permissionPrefix){%>
-                        visible: hasPermission('<%= permissionPrefix %>_DELETE'),<%}%>
-                        confirm: {
-                            title: `您确定要删除“${<%= fields[0].dataIndex%>}”？`,
-                            onConfirm: () => {
-                                this.setState({loading: true});
-                                this.props.ajax
-                                    .del(`<%= ajaxUrl %>/${id}`, null, {successTip})
-                                    .then(() => this.handleSearch())
-                                    .finally(() => this.setState({loading: false}));
-                            },
-                        },
+                        visible: hasPermission('<%= permissionPrefix %>:del'),<%}%>
+                        onConfirm: () => {this.handleDel(id)},
                     },
                 ];
 
@@ -109,15 +100,17 @@ export default class <%= capitalName %>List extends Component {
         this.handleSearch();
     }
 
+    /**
+    * 获取列表
+    */
     handleSearch = () => {
         const {params, pageNum, pageSize} = this.state;
 
         this.setState({loading: true});
-        this.props.ajax
-            .get('<%= ajaxUrl %>', {...params, pageNum, pageSize})
+        list({...params, pageNum, pageSize})
             .then(res => {
                 if (res) {
-                    const {list: dataSource, total} = res;
+                    const {records: dataSource, total} = res;
                     this.setState({
                         dataSource,
                         total,
@@ -127,13 +120,56 @@ export default class <%= capitalName %>List extends Component {
             .finally(() => this.setState({loading: false}));
     };
 
+    /**
+     * 处理删除数据
+     */
+    handleDel(id) {
+        this.setState({loading: true});
+        del({id})
+            .then(() => {
+                let dataSource = [...this.state.dataSource]
+                dataSource.forEach((e, i) => {
+                    if (id === e.id) {
+                        dataSource.splice(i, 1)
+                    }
+                });
+                this.setState({ dataSource })
+            })
+            .finally(() => this.setState({loading: false}));
+    }
+
+    /**
+     * 处理添加
+     */
     handleAdd = () => {
-        this.setState({id: void 0, visible: true});
+        this.setState({formData: {}, visible: true});
     };
 
-    handleEdit = (id) => {
-        this.setState({id, visible: true});
+    /**
+     * 处理编辑
+     */
+    handleEdit = (formData) => {
+        this.setState({formData, visible: true});
     };
+
+    
+    /**
+     * 添加、编辑成功后回调
+     */
+    handleOk(id, data) {
+        let dataSource = []
+        if (id) {
+            dataSource = [...this.state.dataSource]
+            dataSource.forEach((e, i) => {
+                if (e.id === id) {
+                    dataSource[i] = data
+                }
+            });
+        } else {
+            dataSource = [data, ...this.state.dataSource]
+        }
+        this.setState({ visible: false, dataSource })
+    }
 
     render() {
         const {
@@ -143,7 +179,7 @@ export default class <%= capitalName %>List extends Component {
             pageNum,
             pageSize,
             visible,
-            id,
+            formData,
         } = this.state;
 
         return (
@@ -177,9 +213,9 @@ export default class <%= capitalName %>List extends Component {
                 </FixBottom><%}%>
 
                 <<%= capitalName %>Edit
-                    id={id}
+                    formData={formData}
                     visible={visible}
-                    onOk={() => this.setState({visible: false})}
+                    onOk={this.handleOk.bind(this)}
                     onCancel={() => this.setState({visible: false})}
                 />
             </PageContent>

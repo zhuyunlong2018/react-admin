@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const {getDirs, generateFile, getFileContent} = require('../utils');
+const { getDirs, generateFile, getFileContent } = require('../utils');
 
 function getFileLevel(filePath) {
     const src = '/src/'; // FIXME 这里是硬编码
@@ -22,7 +22,7 @@ function getFileLevel(filePath) {
 
 module.exports = {
     generatorFiles(req, res, next) {
-        const {baseInfo, listPage, editPage, listEditModel} = req.body;
+        const { baseInfo, listPage, editPage, ajaxApi } = req.body;
         const generates = [];
 
         if (listPage) {
@@ -33,7 +33,6 @@ module.exports = {
                 ...listPage,
                 outPutFile,
                 fileLevel,
-                editPageRoutePath: editPage ? editPage.routePath : `${listPage.routePath}/+edit`,
             };
             generates.push(generateFile(config));
         }
@@ -46,68 +45,54 @@ module.exports = {
                 ...editPage,
                 outPutFile,
                 fileLevel,
-                listPageRoutePath: listPage ? listPage.routePath : `/${baseInfo.name}`
             };
             generates.push(generateFile(config));
         }
 
-        if (listEditModel) {
-            const outPutFile = path.resolve(listEditModel.outPutDir, listEditModel.outPutFile);
-            const fileLevel = getFileLevel(outPutFile);
-
-            const config = {
-                ...listEditModel,
-                ajaxUrl: listPage ? listPage.ajaxUrl : editPage.ajaxUrl,
-                outPutFile,
-                fileLevel,
-            };
-            generates.push(generateFile(config));
+        if (ajaxApi) {
+            //生成api文件
+            generates.push(generateFile({
+                template: ajaxApi.template,
+                outPutFile: path.resolve(ajaxApi.outPutDir, ajaxApi.outPutFile),
+                ajaxUrl: baseInfo.ajaxPrefix,
+            }));
         }
 
         Promise.all(generates).then(() => {
-            res.send(true);
+            res.send({ code: 200, data: true });
         });
     },
 
     getFileContent(req, res, next) {
-        const {baseInfo, pageInfo} = req.body;
+        const { baseInfo, pageInfo } = req.body;
         const outPutFile = path.resolve(pageInfo.outPutDir, pageInfo.outPutFile);
         const fileLevel = getFileLevel(outPutFile);
-
-        const editPageRoutePath = `${pageInfo.routePath}/+edit`;
-        const listPageRoutePath = `/${baseInfo.name}`;
-        const ajaxUrl = `/${baseInfo.name}`;
-
         const config = {
             ...baseInfo,
             ...pageInfo,
             outPutFile,
             fileLevel,
-
-            editPageRoutePath,
-            listPageRoutePath,
-            ajaxUrl,
         };
 
         getFileContent(config)
-            .then(content => res.send(content));
+            .then(content => res.send({ code: 200, data: content }));
     },
 
     getSrcDirs(req, res, next) {
         const dirs = getDirs();
         if (dirs && dirs.children) {
-            res.send(dirs.children);
+            res.send({ code: 200, data: dirs.children });
             return;
         }
-        res.send([]);
+        res.send({ code: 200, data: [] });
     },
 
     checkFileExist(req, res, next) {
-        const {files} = req.query;
+        const { files } = req.query;
         const result = [];
 
         files.forEach(item => {
-            const {fileDir, fileName} = JSON.parse(item);
+            const { fileDir, fileName } = JSON.parse(item);
             const file = path.resolve(fileDir, fileName);
             const exist = fs.existsSync(file);
             result.push({
@@ -116,6 +101,6 @@ module.exports = {
             });
         });
 
-        res.send(result);
+        res.send({ code: 200, data: result });
     },
 };

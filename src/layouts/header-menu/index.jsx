@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {Menu, Icon} from 'antd';
-import {renderNode} from '@/library/utils/tree-utils';
+import { Menu, Icon } from 'antd';
+import { renderNode } from '@/library/utils/tree-utils';
 import Link from '../page-link';
 import './style.less';
 
@@ -16,12 +16,12 @@ export default class HeaderMenu extends Component {
 
     static defaultProps = {
         dataSource: [],
-        theme: 'default',
+        theme: 'light',
         selectedKeys: [],
     };
 
     renderMenus() {
-        const {dataSource} = this.props;
+        const { dataSource } = this.props;
 
         if (dataSource && dataSource.length) {
             return renderNode(dataSource, (item, children) => {
@@ -35,7 +35,7 @@ export default class HeaderMenu extends Component {
                 } = item;
 
                 let title = <span>{text}</span>;
-                if (icon) title = <span><Icon type={icon}/><Icon type="home" style={{display: 'none'}}/><span>{text}</span></span>;
+                if (icon) title = <span><Icon type={icon} /><Icon type="home" style={{ display: 'none' }} /><span>{text}</span></span>;
 
                 if (children) {
                     return (
@@ -53,13 +53,13 @@ export default class HeaderMenu extends Component {
                                 {title}
                             </a>
                         ) : (
-                            <Link to={{
-                                pathname: path,
-                                state: {from: 'menu'}
-                            }}>
-                                {title}
-                            </Link>
-                        )}
+                                <Link to={{
+                                    pathname: path,
+                                    state: { from: 'menu' }
+                                }}>
+                                    {title}
+                                </Link>
+                            )}
                     </Menu.Item>
                 );
             });

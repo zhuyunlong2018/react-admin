@@ -1,6 +1,5 @@
-import {notification} from 'antd';
-import {getCurrentLocal} from '@/i18n';
-import {toLogin} from './index';
+import { notification } from 'antd';
+import { toLogin } from './index';
 
 /**
  * 尝试获取错误信息 errorTio > resData.message > error.message > '未知系统错误'
@@ -9,12 +8,11 @@ import {toLogin} from './index';
  * @param errorTip
  * @returns {*}
  */
-function getErrorTip({error, errorTip}) {
-    const ajaxTip = getCurrentLocal()?.ajaxTip || {};
+function getErrorTip({ error, errorTip }) {
     if (errorTip && errorTip !== true) return errorTip;
 
     if (error && error.response) {
-        const {status, data} = error.response;
+        const { status, data } = error.response;
 
         if (data.code === 4002) { // 需要登录
             return toLogin();
@@ -24,39 +22,37 @@ function getErrorTip({error, errorTip}) {
         if (data.msg) return data.msg;
 
         if (status === 403) {
-            return ajaxTip.noAccess;
+            return '您无权访问';
         }
 
         if (status === 404) {
-            return ajaxTip.notFound;
+            return '您访问的资源不存在';
         }
 
         if (status === 504) {
-            return ajaxTip.serverBusy;
+            return '服务器繁忙';
         }
 
         if (status === 500) {
-            return ajaxTip.serverBusy;
+            return '服务器繁忙';
         }
     }
 
-    if (error && error.message && error.message.startsWith('timeout of')) return ajaxTip.timeOut;
+    if (error && error.message && error.message.startsWith('timeout of')) return "请求超时";
 
     if (error) return error.message;
 
-    return ajaxTip.serverBusy;
+    return '服务器繁忙';
 }
 
-export default function handleError({error, errorTip}) {
-    const ajaxTip = getCurrentLocal()?.ajaxTip || {};
+export default function handleError({ error, errorTip }) {
 
     if (errorTip === false) return;
 
-    const description = getErrorTip({error, errorTip});
-    console.log(ajaxTip.error)
-    console.log(description)
+    const description = getErrorTip({ error, errorTip });
+
     notification.error({
-        message: ajaxTip.error,
+        message: '失败',
         description,
     });
 }

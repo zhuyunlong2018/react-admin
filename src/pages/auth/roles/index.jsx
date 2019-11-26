@@ -3,6 +3,7 @@ import { Table } from 'antd';
 import PageContent from '@/layouts/page-content';
 import { Operator, ToolBar } from "@/library/antd";
 import config from '@/commons/config-hoc';
+import { hasPermission } from '@/commons';
 import RoleEdit from './RoleEdit';
 import { getRoles, del } from '@/api/role'
 
@@ -26,10 +27,12 @@ export default class RoleList extends Component {
                 const items = [
                     {
                         label: '编辑',
+                        visible: hasPermission('admin:roles:edit'),
                         onClick: () => this.handleEdit(record),
                     },
                     {
                         label: '删除',
+                        visible: hasPermission('admin:roles:del'),
                         color: 'red',
                         confirm: {
                             title: `您确定删除"${name}"?`,
@@ -108,9 +111,13 @@ export default class RoleList extends Component {
         return (
             <PageContent>
                 <ToolBar
-                    items={[
-                        { type: 'primary', text: '添加角色', icon: 'plus', onClick: this.handleAdd }
-                    ]}
+                    items={[{
+                        type: 'primary',
+                        text: '添加角色',
+                        icon: 'plus',
+                        onClick: this.handleAdd,
+                        visible: hasPermission('admin:roles:add'),
+                    }]}
                 />
 
                 <Table

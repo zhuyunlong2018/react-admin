@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {ChromePicker, SketchPicker} from 'react-color';
+import React, { Component } from 'react';
+import { ChromePicker, SketchPicker } from 'react-color';
 
 const noop = () => {
 };
@@ -30,29 +30,29 @@ export default class Index extends Component {
     };
 
     handleClick = () => {
-        const {displayColorPicker} = this.state;
-        this.setState({displayColorPicker: !displayColorPicker});
+        const { displayColorPicker } = this.state;
+        this.setState({ displayColorPicker: !displayColorPicker });
     };
 
     handleClose = () => {
-        this.setState({displayColorPicker: false});
+        this.setState({ displayColorPicker: false });
     };
 
     handleChange = color => {
-        const {onChange} = this.props;
-        this.setState({color: color.hex});
+        const { onChange } = this.props;
+        this.setState({ color: color.hex });
         onChange(color.hex, color);
     };
 
     handleChangeComplete = color => {
-        const {onChangeComplete} = this.props;
-        this.setState({color: color.hex});
+        const { onChangeComplete } = this.props;
+        this.setState({ color: color.hex });
         onChangeComplete(color.hex);
     };
 
     render() {
-        const {small, type, position} = this.props;
-        const {color, displayColorPicker} = this.state;
+        const { small, type, position } = this.props;
+        const { color, displayColorPicker } = this.state;
         const Picker = pickers[type];
         const styles = {
             color: {
@@ -83,6 +83,7 @@ export default class Index extends Component {
             wrapper: {
                 position: 'inherit',
                 zIndex: '100',
+                right: '-130px',
             },
         };
 
@@ -93,12 +94,12 @@ export default class Index extends Component {
 
         const swatch = (
             <div style={styles.swatch} onClick={this.handleClick}>
-                <div style={styles.color}/>
+                <div style={styles.color} />
             </div>
         );
         const picker = displayColorPicker ? (
             <div style={styles.popover}>
-                <div style={styles.cover} onClick={this.handleClose}/>
+                <div style={styles.cover} onClick={this.handleClose} />
                 <div style={styles.wrapper}>
                     <Picker
                         {...this.props}

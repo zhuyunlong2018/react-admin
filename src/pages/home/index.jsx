@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import ReactEchart from 'echarts-for-react';
-import {Row, Col} from 'antd';
+import { Row, Col } from 'antd';
 import config from '@/commons/config-hoc';
 import PageContent from '@/layouts/page-content';
 import DataBlock from '@/components/data-block';
@@ -8,8 +8,8 @@ import './style.less';
 
 @config({
     path: '/',
-    title: {local: 'home', text: '首页', icon: 'home'},
-    breadcrumbs: [{key: 'home', local: 'home', text: '首页', icon: 'home'}],
+    title: { text: '首页', icon: 'home' },
+    breadcrumbs: [{ key: 'home', text: '首页', icon: 'home' }],
 })
 export default class Home extends Component {
     constructor(...props) {
@@ -80,11 +80,11 @@ export default class Home extends Component {
                     radius: '55%',
                     center: ['50%', '50%'],
                     data: [
-                        {value: 335, name: '直接访问'},
-                        {value: 310, name: '邮件营销'},
-                        {value: 274, name: '联盟广告'},
-                        {value: 235, name: '视频广告'},
-                        {value: 400, name: '搜索引擎'}
+                        { value: 335, name: '直接访问' },
+                        { value: 310, name: '邮件营销' },
+                        { value: 274, name: '联盟广告' },
+                        { value: 235, name: '视频广告' },
+                        { value: 400, name: '搜索引擎' }
                     ].sort(function (a, b) {
                         return a.value - b.value;
                     }),
@@ -232,7 +232,7 @@ export default class Home extends Component {
                             }
                         },
                         data: [
-                            [{type: 'min'}, {type: 'max'}]
+                            [{ type: 'min' }, { type: 'max' }]
                         ]
                     }
                 },
@@ -313,20 +313,20 @@ export default class Home extends Component {
                         icon="star"
                     />
                 </div>
-                <Row style={{marginTop: 16}}>
-                    <Col span={8} style={{paddingRight: 16}}>
+                <Row style={{ marginTop: 16 }}>
+                    <Col span={8} style={{ paddingRight: 16 }}>
                         <div style={colStyle}>
-                            <ReactEchart option={this.getPieOption()}/>
+                            <ReactEchart option={this.getPieOption()} />
                         </div>
                     </Col>
                     <Col span={16}>
                         <div style={colStyle}>
-                            <ReactEchart option={this.getBarOption()}/>
+                            <ReactEchart option={this.getBarOption()} />
                         </div>
                     </Col>
                 </Row>
-                <div style={{...colStyle, marginTop: 16}}>
-                    <ReactEchart option={this.getBar2Option()}/>
+                <div style={{ ...colStyle, marginTop: 16 }}>
+                    <ReactEchart option={this.getBar2Option()} />
                 </div>
             </PageContent>
         );

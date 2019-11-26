@@ -1,12 +1,9 @@
-import React, {Component} from 'react';
-import {Icon, Tooltip} from 'antd';
+import React, { Component } from 'react';
+import { Icon, Tooltip } from 'antd';
 import config from '@/commons/config-hoc';
 
 @config({
     event: true,
-    connect: state => ({
-        local: state.system.i18n.setting,
-    }),
 })
 export default class HeaderFullScreen extends Component {
     state = {
@@ -22,11 +19,11 @@ export default class HeaderFullScreen extends Component {
         this.props.addEventListener(document, 'webkitfullscreenchange', this.handleFullScreenChange);
         this.props.addEventListener(document, 'msfullscreenchange', this.handleFullScreenChange);
         this.props.addEventListener(document, 'click', () => this.handleToolTipHide(0));
-        this.setState({fullScreen: !!fullScreen});
+        this.setState({ fullScreen: !!fullScreen });
     }
 
     handleFullScreenClick = () => {
-        const {fullScreen} = this.state;
+        const { fullScreen } = this.state;
         if (fullScreen) {
             if (document.exitFullscreen) {
                 document.exitFullscreen();
@@ -52,39 +49,39 @@ export default class HeaderFullScreen extends Component {
     };
 
     handleFullScreenChange = () => {
-        const {fullScreen} = this.state;
-        this.setState({fullScreen: !fullScreen});
+        const { fullScreen } = this.state;
+        this.setState({ fullScreen: !fullScreen });
     };
 
     handleToolTipShow = () => {
         if (this.ST) clearTimeout(this.ST);
-        this.setState({toolTipVisible: true});
+        this.setState({ toolTipVisible: true });
     };
 
     handleToolTipHide = (time = 300) => {
         this.ST = setTimeout(() => {
-            this.setState({toolTipVisible: false})
+            this.setState({ toolTipVisible: false })
         }, time);
     };
 
     render() {
-        const {className, local} = this.props;
-        const {fullScreen, toolTipVisible} = this.state;
+        const { className } = this.props;
+        const { fullScreen, toolTipVisible } = this.state;
         return (
             <div
-                style={{padding: '0 16px'}}
+                style={{ padding: '0 16px' }}
                 className={className}
                 onClick={this.handleFullScreenClick}
                 onMouseEnter={this.handleToolTipShow}
                 onMouseLeave={() => this.handleToolTipHide()}
             >
-                <Tooltip visible={toolTipVisible} placement="bottom" title={fullScreen ? local.exitFullScreen : local.fullScreen}>
-                    <div style={{height: '30px', lineHeight: '30px', fontSize: 18, paddingTop: 2}}>
+                <Tooltip visible={toolTipVisible} placement="bottom" title={fullScreen ? "退出全屏" : "全屏"}>
+                    <div style={{ height: '30px', lineHeight: '30px', fontSize: 18, paddingTop: 2 }}>
                         {fullScreen ? (
-                            <Icon type="fullscreen-exit"/>
+                            <Icon type="fullscreen-exit" />
                         ) : (
-                            <Icon type="fullscreen"/>
-                        )}
+                                <Icon type="fullscreen" />
+                            )}
                     </div>
                 </Tooltip>
             </div>

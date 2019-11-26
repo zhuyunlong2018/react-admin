@@ -8,6 +8,8 @@ export default {
         pluralityName: {value: ''},
         permissionPrefix: {value: ''},
         showMore: false,
+        ajaxPrefix: {value: ''},
+        routePath: {value: ''},
     },
 
     syncStorage: true,

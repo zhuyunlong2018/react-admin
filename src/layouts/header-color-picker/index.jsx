@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
-import {Icon, Tooltip} from 'antd';
+import React, { Component } from 'react';
+import { Icon, Tooltip } from 'antd';
 import config from '@/commons/config-hoc';
-import {loadScript} from '@/commons';
+import { loadScript } from '@/commons';
 import ColorPicker from '@/components/color-picker';
 import theme from '@/theme';
 import './style.less';
@@ -21,7 +21,6 @@ const LESS_URL = `${ROUTE_BASE_NAME}/less.min.js`;
         return {
             primaryColor: state.system.primaryColor,
             loading: state.system.loading,
-            local: state.system.i18n.setting,
         };
     },
 })
@@ -39,7 +38,7 @@ export default class ThemeColorPicker extends Component {
             document.body.insertBefore(themeStyle, document.body.firstChild);
         }
 
-        const {primaryColor} = this.props;
+        const { primaryColor } = this.props;
 
         // .less文件加载完成之后，生成主题，localStorage中的主题有可能过时，需要覆盖
         if (primaryColor) this.handleColorChange(primaryColor);
@@ -59,7 +58,7 @@ export default class ThemeColorPicker extends Component {
                     '@primary-color': color,
                 })
                 .then(() => {
-                    Icon.setTwoToneColor({primaryColor: color});
+                    Icon.setTwoToneColor({ primaryColor: color });
                     this.props.action.system.setPrimaryColor(color);
 
                     // 先清除缓存样式
@@ -99,12 +98,12 @@ export default class ThemeColorPicker extends Component {
 
     handleToolTipShow = () => {
         if (this.ST) clearTimeout(this.ST);
-        this.setState({toolTipVisible: true});
+        this.setState({ toolTipVisible: true });
     };
 
     handleToolTipHide = (time = 300) => {
         this.ST = setTimeout(() => {
-            this.setState({toolTipVisible: false})
+            this.setState({ toolTipVisible: false })
         }, time);
     };
 
@@ -114,17 +113,17 @@ export default class ThemeColorPicker extends Component {
             className,
             local,
         } = this.props;
-        const {toolTipVisible} = this.state;
+        const { toolTipVisible } = this.state;
         return (
             <div styleName="root" className={`theme-color-picker ${className}`}>
                 <Tooltip
                     visible={toolTipVisible}
                     placement="bottom"
-                    title={local.selectPrimaryColor}
+                    title="主颜色"
                 >
                     <div styleName="picker"
-                         onMouseEnter={this.handleToolTipShow}
-                         onMouseLeave={() => this.handleToolTipHide()}
+                        onMouseEnter={this.handleToolTipShow}
+                        onMouseLeave={() => this.handleToolTipHide()}
                     >
                         <ColorPicker
                             type="sketch"
@@ -149,7 +148,7 @@ export default class ThemeColorPicker extends Component {
                         />
                     </div>
                 </Tooltip>
-                <Icon style={{marginLeft: 4}} type="caret-down"/>
+                <Icon style={{ marginLeft: 4 }} type="caret-down" />
             </div>
         );
     }

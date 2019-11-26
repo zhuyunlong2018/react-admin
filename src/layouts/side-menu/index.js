@@ -19,7 +19,7 @@ export default class SideMenu extends Component {
 
     static defaultProps = {
         dataSource: [],
-        theme: 'dark',
+        theme: 'light',
         collapsed: false,
         openKeys: [],
         selectedKeys: [],

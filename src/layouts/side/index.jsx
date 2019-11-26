@@ -1,23 +1,22 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {getScrollBarWidth} from '@/library/utils';
+import { getScrollBarWidth } from '@/library/utils';
 import SideMenu from '../side-menu';
-import {connect} from '../../models/index';
-import {PAGE_FRAME_LAYOUT} from '@/models/settings';
+import { connect } from '../../models/index';
+import { PAGE_FRAME_LAYOUT } from '@/models/settings';
 import DragBar from './DragBar';
 import './style.less';
 
 const scrollBarWidth = getScrollBarWidth();
 
 @connect(state => {
-    const {menus, openKeys, topMenu, selectedMenu} = state.menu;
-    const {show: showSide, width, collapsed, collapsedWidth, dragging} = state.side;
+    const { menus, openKeys, topMenu, selectedMenu } = state.menu;
+    const { show: showSide, width, collapsed, collapsedWidth, dragging } = state.side;
     return {
         menus,
         openKeys,
         topMenu,
         selectedMenu,
-
         showSide,
         sideWidth: width,
         sideCollapsed: collapsed,
@@ -46,12 +45,12 @@ export default class Side extends Component {
     scrollMenu = (prevProps = {}) => {
         // 等待当前菜单选中
         setTimeout(() => {
-            const {selectedMenu} = this.props;
-            const {selectedMenu: prevSelectedMenu} = prevProps;
+            const { selectedMenu } = this.props;
+            const { selectedMenu: prevSelectedMenu } = prevProps;
             if (selectedMenu && prevSelectedMenu && selectedMenu.key === prevSelectedMenu.key) {
                 return;
             }
-            const selectedMenuNode = this.inner?.querySelector('.ant-menu-item-selected');
+            const selectedMenuNode = this.inner ?.querySelector('.ant-menu-item-selected');
             if (!selectedMenuNode) return;
 
             const innerHeight = this.inner.clientHeight;
@@ -68,7 +67,7 @@ export default class Side extends Component {
 
 
     handleMenuOpenChange = (openKeys) => {
-        const {sideCollapsed} = this.props;
+        const { sideCollapsed } = this.props;
         if (!sideCollapsed) this.props.action.menu.setOpenKeys(openKeys);
     };
 
@@ -76,7 +75,7 @@ export default class Side extends Component {
         this.props.action.side.setDragging(true);
     };
 
-    handleSideResize = ({clientX}) => {
+    handleSideResize = ({ clientX }) => {
         this.props.action.side.setWidth(clientX + 5);
     };
 
@@ -122,7 +121,7 @@ export default class Side extends Component {
         }
 
         if (hasSide) return (
-            <div styleName="side" style={{width: sideWidth, display: showSide ? 'block' : 'none', transitionDuration, ...style}}>
+            <div styleName="side" style={{ width: sideWidth, display: showSide ? 'block' : 'none', transitionDuration, ...style }}>
                 {sideCollapsed ? null : (
                     <DragBar
                         styleName="drag-bar"
@@ -132,8 +131,8 @@ export default class Side extends Component {
                     />
                 )}
 
-                <div styleName="outer" style={{overflow: outerOverFlow, transitionDuration}}>
-                    <div styleName="inner" ref={node => this.inner = node} style={{width: sideInnerWidth, overflow: innerOverFlow, transitionDuration}}>
+                <div styleName="outer" style={{ overflow: outerOverFlow, transitionDuration }}>
+                    <div styleName="inner" ref={node => this.inner = node} style={{ width: sideInnerWidth, overflow: innerOverFlow, transitionDuration }}>
                         <SideMenu
                             theme={theme}
                             dataSource={sideMenus}

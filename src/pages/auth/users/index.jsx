@@ -10,6 +10,7 @@ import {
     ToolBar,
 } from "@/library/antd";
 import UserEdit from "./UserEdit"
+import { hasPermission } from '@/commons';
 import config from '@/commons/config-hoc';
 import { getUsers, del } from "@/api/user"
 
@@ -94,11 +95,13 @@ export default class UserCenter extends Component {
                 const items = [
                     {
                         label: '编辑',
+                        visible: hasPermission('admin:users:edit'),
                         // onClick: () => this.props.history.push(`/users/_/UserEdit/${id}?name=${name}`),
                         onClick: () => this.handleEdit(record),
                     },
                     {
                         label: '删除',
+                        visible: hasPermission('admin:users:del'),
                         color: 'red',
                         confirm: {
                             title: `您确定删除"${name}"?`,
@@ -177,7 +180,7 @@ export default class UserCenter extends Component {
 
     onOke(user) {
         if (this.state.user) {
-            let dataSource = [ ...this.state.dataSource ]
+            let dataSource = [...this.state.dataSource]
             for (let index in dataSource) {
                 if (dataSource[index].id === user.id) {
                     dataSource[index] = user
@@ -222,7 +225,13 @@ export default class UserCenter extends Component {
 
                 <ToolBar
                     items={[
-                        { type: 'primary', text: '添加用户', icon: 'user-add', onClick: this.handleAdd }
+                        {
+                            type: 'primary',
+                            text: '添加用户',
+                            icon: 'user-add',
+                            visible: hasPermission('admin:users:add'),
+                            onClick: this.handleAdd
+                        }
                     ]}
                 />
 

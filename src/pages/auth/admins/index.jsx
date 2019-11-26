@@ -7,6 +7,7 @@ import {
     ToolBar,
 } from "@/library/antd";
 import AdminEdit from "./AdminEdit"
+import { hasPermission } from '@/commons';
 import config from '@/commons/config-hoc';
 import { getAdmins, del } from "@/api/admin"
 
@@ -34,7 +35,7 @@ export default class AdminCenter extends Component {
             title: '绑定角色', dataIndex: 'roles', key: 'roles',
             render: (value, record) => {
                 const roles = value.map((element) =>
-                    <Tag key={element.id+element.name} color="magenta">{element.name}</Tag>
+                    <Tag key={element.id + element.name} color="magenta">{element.name}</Tag>
                 );
                 return (<div>{roles}</div>);
             }
@@ -46,10 +47,12 @@ export default class AdminCenter extends Component {
                 const items = [
                     {
                         label: '编辑',
+                        visible: hasPermission('admin:admins:edit'),
                         onClick: () => this.handleEdit(record),
                     },
                     {
                         label: '删除',
+                        visible: hasPermission('admin:admins:edit'),
                         color: 'red',
                         confirm: {
                             title: `您确定删除"${name}"?`,
@@ -90,7 +93,7 @@ export default class AdminCenter extends Component {
 
     handleEdit = (admin) => {
         if (!admin.selectRoles) {
-            let data = {...admin, selectRoles: []}
+            let data = { ...admin, selectRoles: [] }
             admin.roles.forEach(element => {
                 data.selectRoles.push(element.id)
             });
@@ -114,7 +117,7 @@ export default class AdminCenter extends Component {
 
     onOke(admin) {
         if (this.state.admin) {
-            let dataSource = [ ...this.state.dataSource ]
+            let dataSource = [...this.state.dataSource]
             for (let index in dataSource) {
                 if (dataSource[index].id === admin.id) {
                     dataSource[index] = admin
@@ -142,9 +145,13 @@ export default class AdminCenter extends Component {
         return (
             <PageContent>
                 <ToolBar
-                    items={[
-                        { type: 'primary', text: '添加管理员', icon: 'admin-add', onClick: this.handleAdd }
-                    ]}
+                    items={[{
+                        type: 'primary',
+                        text: '添加管理员',
+                        icon: 'admin-add',
+                        onClick: this.handleAdd,
+                        visible: hasPermission('admin:admins:add'),
+                    }]}
                 />
 
                 <Table
